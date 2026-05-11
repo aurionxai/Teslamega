@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15171a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
+<title>Landlord Meeting Q&amp;A Prep · Green Leaf Lotus</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="light"]{
+  --paper:#f5f0e6;
+  --paper-2:#ede5d2;
+  --paper-3:#e0d6bf;
+  --ink:#15171a;
+  --ink-soft:#3a3d44;
+  --muted:#6a6964;
+  --rule:#1a1a1a;
+  --rule-soft:#c8c1ad;
+  --accent:#7d2a2a;
+  --accent-tint:rgba(125,42,42,.10);
+  --gold:#a07a2c;
+  --gold-tint:rgba(160,122,44,.14);
+  --green:#2d5e3e;
+  --green-tint:rgba(45,94,62,.12);
+  --warn:#a86a1f;
+  --warn-tint:rgba(168,106,31,.16);
+}
+:root[data-theme="dark"]{
+  --paper:#15171a;
+  --paper-2:#1f2226;
+  --paper-3:#2a2d32;
+  --ink:#f5f0e6;
+  --ink-soft:#d8d2c0;
+  --muted:#9a9586;
+  --rule:#404040;
+  --rule-soft:#333;
+  --accent:#d76060;
+  --accent-tint:rgba(215,96,96,.16);
+  --gold:#dcae5c;
+  --gold-tint:rgba(220,174,92,.16);
+  --green:#6db080;
+  --green-tint:rgba(109,176,128,.16);
+  --warn:#e0a050;
+  --warn-tint:rgba(224,160,80,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'DM Sans',-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-size-adjust:100%;
+}
+body{min-height:100vh;transition:background-color .35s ease,color .35s ease}
+.shell{max-width:820px;margin:0 auto;padding:32px 22px 50px;position:relative}
+
+.theme-toggle{
+  position:absolute;top:32px;right:22px;
+  background:var(--paper-2);border:1px solid var(--rule);
+  color:var(--ink);font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:1.2px;padding:8px 12px;
+  cursor:pointer;border-radius:0;text-transform:uppercase;font-weight:600;transition:.2s;
+}
+.theme-toggle:hover{background:var(--paper-3);border-color:var(--accent)}
+
+/* HEADER */
+.head{padding-bottom:18px;border-bottom:2px solid var(--rule);margin-bottom:24px}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.4px;
+  text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px;
+}
+h1{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:36px;line-height:1;letter-spacing:-0.025em;margin-bottom:8px;
+  font-variation-settings:"opsz" 144;
+}
+h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.lede{font-size:15px;color:var(--ink-soft);font-weight:400;line-height:1.5;margin-bottom:14px}
+.meta{
+  display:flex;flex-wrap:wrap;gap:6px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600;
+}
+.meta b{color:var(--ink)}
+
+/* HOW TO USE */
+.howto{
+  background:var(--paper-2);border-left:3px solid var(--gold);
+  padding:14px 18px;margin-bottom:24px;font-size:13.5px;color:var(--ink-soft);line-height:1.55;
+}
+.howto b{color:var(--ink)}
+
+/* QUICK REFERENCE CARD */
+.quickref{
+  background:var(--paper-2);border:2px solid var(--accent);
+  margin-bottom:24px;
+}
+.qr-head{
+  background:var(--accent);color:var(--paper);padding:12px 18px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.6px;
+  text-transform:uppercase;font-weight:700;
+}
+.qr-body{padding:16px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px 18px}
+@media (max-width:520px){.qr-body{grid-template-columns:1fr}}
+.qr-item{
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  padding:7px 0;border-bottom:1px dotted var(--rule-soft);font-size:13.5px;
+}
+.qr-lbl{color:var(--ink-soft)}
+.qr-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink);text-align:right}
+
+/* OPEN DECISIONS CALLOUT */
+.decisions{
+  background:var(--warn-tint);border:1.5px solid var(--warn);
+  padding:16px 18px;margin-bottom:24px;
+}
+.dec-head{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.6px;
+  text-transform:uppercase;font-weight:700;color:var(--warn);margin-bottom:10px;
+}
+.dec-list{list-style:none;font-size:13.5px;line-height:1.6}
+.dec-list li{padding:5px 0;border-bottom:1px dotted var(--rule-soft);color:var(--ink-soft)}
+.dec-list li:last-child{border-bottom:none}
+.dec-list b{color:var(--ink)}
+
+/* SECTIONS */
+h2{
+  font-family:'Fraunces',serif;font-size:22px;font-weight:800;
+  letter-spacing:-0.012em;margin:32px 0 4px;
+  display:flex;align-items:baseline;gap:12px;
+}
+h2 .num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--accent);font-weight:700;letter-spacing:1.4px;
+}
+.sec-text{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:12px;font-style:italic}
+
+/* Q&A CARDS */
+.qa{
+  background:var(--paper-2);border-left:3px solid var(--accent);
+  padding:14px 16px 14px 18px;margin-bottom:12px;
+}
+.qa-q{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:700;
+  color:var(--ink);line-height:1.35;margin-bottom:8px;letter-spacing:-0.005em;
+}
+.qa-num{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1.4px;
+  margin-right:8px;vertical-align:1px;
+}
+.qa-a{font-size:14px;color:var(--ink-soft);line-height:1.6}
+.qa-a strong{color:var(--ink)}
+.qa-data{
+  font-size:12px;color:var(--muted);line-height:1.55;
+  padding:8px 12px;background:var(--paper);
+  border-left:2px solid var(--gold);margin-top:9px;
+}
+.qa-data b{color:var(--ink);font-weight:700;letter-spacing:0.2px}
+.qa-pushback{
+  font-size:12.5px;color:var(--ink-soft);line-height:1.55;
+  padding:8px 12px;background:var(--accent-tint);margin-top:7px;
+}
+.qa-pushback b{color:var(--accent);font-weight:700}
+.qa-decide{
+  font-size:12px;color:var(--warn);line-height:1.5;
+  padding:8px 12px;background:var(--warn-tint);margin-top:7px;
+  font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:0.3px;
+}
+
+/* FOOTER */
+.fine{
+  margin-top:36px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:11.5px;color:var(--muted);line-height:1.6;
+}
+.fine strong{color:var(--ink)}
+.contact{
+  margin-top:14px;padding:13px 15px;background:var(--paper-2);
+  border-left:3px solid var(--accent);font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--ink);letter-spacing:0.4px;line-height:1.6;
+}
+
+@media print{
+  .theme-toggle{display:none}
+  body{background:white;font-size:11pt}
+  .shell{max-width:7.5in;padding:0.4in}
+  h2{page-break-after:avoid}
+  .qa{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">◐ Dark</button>
+
+<header class="head">
+  <div class="eyebrow">LANDLORD MEETING PREP · INVESTMENT GROUP REFERENCE</div>
+  <h1>Q&amp;A Prep<br><em>Green Leaf Lotus Meeting</em></h1>
+  <p class="lede">Anticipated landlord questions, defensible answers, and the empirical data behind each. Read before the meeting. Open on a phone during the meeting if you need to look something up fast.</p>
+  <div class="meta">
+    <span><b>FOR</b> Future Tech 9000 Investment Group</span>
+    <span><b>RE</b> 3463 Procyon St lease pitch</span>
+    <span><b>v1.0 · MAY 2026</b></span>
+  </div>
+</header>
+
+<!-- HOW TO USE -->
+<div class="howto">
+  <b>How to use this doc.</b> Each question is one a sophisticated landlord is likely to ask. Each entry has: the short answer, the data behind it (with source), and where relevant a "push-back" follow-up. Items flagged in orange are decisions Thomas needs to make <strong>before</strong> the meeting — don't walk in without picking a position.
+</div>
+
+<!-- QUICK REFERENCE -->
+<div class="quickref">
+  <div class="qr-head">⚡ Numbers to Know Cold</div>
+  <div class="qr-body">
+    <div class="qr-item"><span class="qr-lbl">Year 1 rent</span><span class="qr-val">$2,000/mo</span></div>
+    <div class="qr-item"><span class="qr-lbl">Annual escalator</span><span class="qr-val">3% compound</span></div>
+    <div class="qr-item"><span class="qr-lbl">10-yr guaranteed total</span><span class="qr-val">$275,133</span></div>
+    <div class="qr-item"><span class="qr-lbl">Max 20-yr total</span><span class="qr-val">$644,889</span></div>
+    <div class="qr-item"><span class="qr-lbl">Project cost (we fund)</span><span class="qr-val">$1,391,500</span></div>
+    <div class="qr-item"><span class="qr-lbl">Landlord capital</span><span class="qr-val">$0</span></div>
+    <div class="qr-item"><span class="qr-lbl">Lease structure</span><span class="qr-val">10 yrs + 2 × 5-yr</span></div>
+    <div class="qr-item"><span class="qr-lbl">Build</span><span class="qr-val">8 V4 stalls + 250 kW solar</span></div>
+    <div class="qr-item"><span class="qr-lbl">Tesla network 2025</span><span class="qr-val">75K stalls, 97% uptime</span></div>
+    <div class="qr-item"><span class="qr-lbl">Vegas blended rate</span><span class="qr-val">$0.45/kWh</span></div>
+    <div class="qr-item"><span class="qr-lbl">Projected gross rev/yr</span><span class="qr-val">~$329,000</span></div>
+    <div class="qr-item"><span class="qr-lbl">Charger noise</span><span class="qr-val">50–70 dB</span></div>
+  </div>
+</div>
+
+<!-- OPEN DECISIONS -->
+<div class="decisions">
+  <div class="dec-head">⚠ Open Decisions — Thomas to Lock Before Meeting</div>
+  <ul class="dec-list">
+    <li><b>Personal guarantee posture.</b> What rent period will you personally back? (Typical: 12–24 months of base rent.) "Good guy" guarantee or full?</li>
+    <li><b>CPI tie-in alternative.</b> Stick with 3% flat, or offer CPI tie-in with 2% floor / 5% cap if landlord pushes on inflation?</li>
+    <li><b>Renewal rent mechanics.</b> 3% continues uninterrupted into renewal periods (recommended) — or fair-market reset at Year 10?</li>
+    <li><b>Early termination by landlord.</b> Hard no, or allowed at Year 10+ with 24-month notice + 36-month rent termination fee?</li>
+    <li><b>Restroom strategy.</b> Restaurant overflow, install portable, or build permanent restroom?</li>
+    <li><b>Investor disclosure.</b> What to share pre-LOI vs post-LOI? Names under NDA only?</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 01 — MONEY & RENT -->
+<h2><span class="num">01</span><span>Money &amp; Rent</span></h2>
+<p class="sec-text">Where 80% of the meeting will live. The landlord wants more money; we want predictability.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q1.1</span>"Why only $2,000? My parking is worth more than that."</div>
+  <div class="qa-a">$2K/month is the <strong>guaranteed floor</strong> — paid no matter what, with zero business risk on the landlord. Add the 3% annual escalator and they collect <strong>$275,133 over the 10-year guaranteed term</strong> — about $35K more than flat rent. To match this risk-adjusted income from a different tenant, they'd need a credit-rated commercial lessee on a similar-length lease, which is rare for parking-lot space.</div>
+  <div class="qa-data"><b>Data:</b> Projected gross site revenue at full ramp ≈ $329K/yr ($0.45/kWh Vegas blended × 250 kWh/stall/day × 8 stalls × 365). The $24K Y1 rent is ~7% of projected gross — comparable to industry ground-lease ratios for fueling sites. For context: 8 stalls + equipment pads occupy roughly 1,750–3,000 sqft of parking lot, and parking-lot ground space leases at a fraction of premium retail rates (Vegas retail averages $1–5/sqft/month per <i>Cushman &amp; Wakefield Las Vegas MarketBeat</i>) because it lacks the frontage and visibility that drive retail pricing.</div>
+  <div class="qa-pushback"><b>If pushed:</b> "We're absorbing 100% of operating risk. If charging volume drops, demand charges spike, or Tesla changes rates — your $2K never moves. We could swap to a higher % revshare instead, but you'd lose the floor entirely. The market data is clear: guaranteed cash with an escalator is worth more than variable upside on a single-use asset."</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q1.2</span>"What if inflation runs 6–8%? I'm stuck at 3%?"</div>
+  <div class="qa-a">The 3% compound escalator is calibrated to the Fed's long-run inflation target and tracks the historical CPI 20-year rolling average. Over 20 years, the escalator delivers <strong>$165K more</strong> than a flat rent — even if inflation averages 2%, you still come out far ahead. If they prefer, we can substitute a CPI tie-in with a floor and cap.</div>
+  <div class="qa-data"><b>Data:</b> BLS CPI-U 20-year rolling averages have stayed at 2.3–3.0% in every period since 1990 except the brief 2021–2023 spike. Historical 30-year average: 2.5% (<i>BLS CPI-U historical series</i>). A 3% fixed escalator outperforms CPI in 18 of the last 30 years.</div>
+  <div class="qa-decide">DECIDE: Will we offer CPI tie-in (2% floor / 5% cap) if pushed?</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q1.3</span>"What if Future Tech 9000 can't pay rent? You vanish?"</div>
+  <div class="qa-a">Three protections: <strong>(1)</strong> Future Tech is investor-funded, not loan-funded — no debt service we could default on. <strong>(2)</strong> Personal guarantee on the first [12–24] months of base rent. <strong>(3)</strong> Six-month security deposit held in escrow or letter of credit. Combined, the landlord has a multi-layered safety net that doesn't depend on Future Tech's operational success.</div>
+  <div class="qa-data"><b>Data:</b> Standard tenant-funded charging deals include personal guarantees of 12–24 months of base rent plus a 3–6 month security deposit. Commercial real estate rent receivership rate for performing tenants exceeds 98% industry-wide (<i>IREM industry benchmarks</i>).</div>
+  <div class="qa-decide">DECIDE: Personal guarantee depth (12 mo, 24 mo, or "good guy" structure)</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q1.4</span>"Why no profit share? If this prints money, why don't I see any?"</div>
+  <div class="qa-a">A profit share would mean they also share the <strong>losses</strong>. Pure guaranteed rent isolates them from revenue volatility — DC fast-charging revenue varies 3× or more between high-traffic and slow months, between seasons, and between competitive cycles. We chose the structure landlords ask for when they understand the volatility: predictable cash with an escalator.</div>
+  <div class="qa-data"><b>Data:</b> Tesla Supercharger network reached 75,000 stalls and delivered 6.7 TWh in 2025, but per-stall quarterly revenue varies widely by location, season, and route competition (<i>Tesla Charging blog, March 2026</i>). EV charging utilization at new sites typically takes 18–36 months to reach steady-state.</div>
+  <div class="qa-pushback"><b>If pushed:</b> "If you want upside exposure, we can add a 5% kicker above a defined profit threshold — but the trade is $2K base + variable kicker vs. $2K base + 3% escalator. Most sophisticated landlords pick the escalator."</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 02 — COUNTERPARTY RISK -->
+<h2><span class="num">02</span><span>Counterparty Risk — Future Tech 9000</span></h2>
+<p class="sec-text">The landlord wants to know: who are we, what's our skin in the game, and what happens if we fold.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q2.1</span>"How long have you operated Tesla sites? Other locations?"</div>
+  <div class="qa-a">Future Tech 9000 is a Nevada C-corporation set up specifically to develop and operate Tesla Supercharger sites in the Vegas market. This site at 3463 Procyon St is our first installation. The principal operator has [INSERT relevant prior experience]. We've been approved through Tesla's Supercharger for Business program, which itself screens for operator viability before site approval.</div>
+  <div class="qa-decide">DECIDE: Thomas's specific operating history framing — emphasize Tesla program approval + investor backing + relevant prior industry experience. Be honest. Sophisticated landlords detect oversell instantly.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q2.2</span>"Who are your investors? Show me your cap stack."</div>
+  <div class="qa-a">Future Tech 9000 is funded by [X] private investors with total committed capital of [$X]. We're prepared to share investor names and audited financials under NDA before lease execution. We can also share commitment letters at LOI signing if helpful.</div>
+  <div class="qa-decide">DECIDE: What disclosure level pre-LOI vs post-LOI vs post-lease-signing? Lock the playbook before the meeting.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q2.3</span>"Will you personally guarantee, or is this LLC-only?"</div>
+  <div class="qa-a">We offer a personal guarantee on [12–24] months of base rent. This is on top of the corporate guarantee. The guarantee can step down after Year 2 if rent has been paid timely. A "good guy" guarantee covering rent only if Future Tech voluntarily vacates is also on the table.</div>
+  <div class="qa-data"><b>Data:</b> Industry-standard structure for tenant-funded ground leases ranges from 6 months (small operators) to 36 months (large national chains). 12–24 months is typical for project-finance-style tenants.</div>
+  <div class="qa-decide">DECIDE: Specific personal guarantee terms — duration, step-down, "good guy" coverage</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q2.4</span>"Insurance — what carriers, what limits, am I additional insured?"</div>
+  <div class="qa-a">Standard coverage spec: <strong>$5M general liability + $5M umbrella</strong>, full property/fire on charging equipment, cyber liability, pollution liability (covers any transformer oil event), business interruption. <strong>Green Leaf named as additional insured</strong> on all policies, with waiver of subrogation. Certificates delivered 30 days before construction begins and renewed annually.</div>
+  <div class="qa-data"><b>Data:</b> Standard insurance structure for tenant-funded EV infrastructure on third-party land. Carriers will quote at LOI stage once site specs are locked.</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 03 — OPERATIONS & TENANT IMPACT -->
+<h2><span class="num">03</span><span>Operations &amp; Tenant Impact</span></h2>
+<p class="sec-text">These are the questions about how the chargers physically affect the property and its existing tenants.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q3.1</span>"How many of my parking spaces do I lose?"</div>
+  <div class="qa-a">Initial estimate: <strong>8–10 spaces</strong>. We're building <strong>8 stalls total</strong> — one of which will be ADA-compliant if code requires it (we don't add a 9th stall for ADA, it's one of the 8). Beyond the stalls themselves, the cabinet pad and transformer pad add a small footprint, typically placed at the lot edge or corner to minimize parking loss. Final count is locked during the walk-through (Step 1 of the process).</div>
+  <div class="qa-data"><b>Data:</b> 8 parking stalls ≈ 1,300 sqft (9×18 ft each). Cabinet pad ~150–300 sqft, transformer pad ~150 sqft, ADA-required clear floor area built into the existing stall footprint (not an extra space). Total site footprint typically 1,750–3,000 sqft depending on circulation needs and existing lot geometry.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q3.2</span>"Will my restaurant tenant be upset? Will they break their lease?"</div>
+  <div class="qa-a">Most restaurant tenants see EV charging as a <strong>customer acquisition asset</strong>, not a threat. We'd recommend including them in the walk-through. EV drivers spend an average 23 minutes on-site charging — that's a captive food-buying audience your restaurant tenant doesn't get from regular street traffic.</div>
+  <div class="qa-data"><b>Data:</b> Average DC fast-charging dwell time: 23 minutes (<i>Convenience &amp; Energy Advisors / Convenience Store News, 2024</i>). 32% of EV owners factor "proximity to food/restaurants" into where they charge; 61% are more likely to shop at retailers with charging (<i>Numerator EV Owner Survey, April 2024, n=4,000+</i>). Real transaction data — Sheetz Breezewood PA: $9 on charging, $10.76 on food at the same visit (<i>Bloomberg, July 2022</i>). Tesla Hollywood Diner Q4 2025: $1M+ in restaurant revenue, 920 fries orders/day driven by charging traffic (<i>Tesla Q4 2025 disclosed data</i>).</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q3.3</span>"Are the chargers loud? My apartment tenants will complain."</div>
+  <div class="qa-a">The charger cabinets themselves run <strong>50–70 dB</strong> during operation — between a quiet conversation and a vacuum cleaner. The louder noise actually comes from the <strong>cars</strong> being charged: their own battery-cooling fans can hit 80+ dB on hot summer days. Mitigation: place cabinets 30+ feet from residential windows, add a 3–4 foot landscaping hedge (cuts ~5 dB), and use the existing parking-lot acoustic profile to absorb the rest.</div>
+  <div class="qa-data"><b>Data:</b> DC fast charger cabinet noise: 50–70 dB at 1m (<i>industry analysis, 2025</i>). For reference: refrigerator hum 50 dB, normal conversation 60 dB, vacuum cleaner 70 dB (<i>CDC NIOSH noise reference</i>). Vehicle battery-cooling fans during fast charging are widely reported at 75–85 dB but vary by car and weather (<i>Tesla owner forums, multiple sources</i>).</div>
+  <div class="qa-pushback"><b>If pushed:</b> "Vegas already runs heat-related fan and AC noise across the property all summer. The marginal noise from chargers is small relative to the existing acoustic floor. We can also commit to a noise study during the walk-through and adjust placement based on findings."</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q3.4</span>"What about lighting at 2 AM? My residents will hate it."</div>
+  <div class="qa-a">Tesla V4 sites use <strong>dark-sky compliant LED, fully down-cast, dimmable</strong>. We can zone-disable any specific fixtures that affect residential windows after 10 PM. The lighting is also motion-activated at low ambient activity, so it's not full brightness when nobody's charging.</div>
+  <div class="qa-data"><b>Data:</b> Tesla V4 lighting specs meet Clark County Title 30 dark-sky ordinance. Typical canopy lumens 30–50 per sqft, dimmable to 10% off-peak. Comparable to commercial parking-lot standards already on the property.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q3.5</span>"Drivers will sit for 30 minutes. Will they use my restaurant's bathrooms?"</div>
+  <div class="qa-a">Some will. Three ways to handle it: <strong>(a)</strong> Treat as a foot-traffic benefit — driver dwell time → food + bathroom + retail spend at your restaurant tenant. <strong>(b)</strong> Install a portable restroom on Future Tech's dime (~$200/month all-in). <strong>(c)</strong> Build a permanent restroom; if paired with a small mart, could itself be revenue-generating.</div>
+  <div class="qa-decide">DECIDE: Which restroom strategy to propose first</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 04 — LEGAL & LEASE -->
+<h2><span class="num">04</span><span>Legal &amp; Lease</span></h2>
+<p class="sec-text">Their lawyer will ask these. Don't wing them.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q4.1</span>"Why does my lender need to sign an SNDA?"</div>
+  <div class="qa-a">SNDA = Subordination, Non-Disturbance &amp; Attornment. <strong>Without it</strong>, if their mortgage ever defaulted or they refinanced with a hostile lender, the new owner could kill our lease in foreclosure — and we'd lose $1.4M of equipment. <strong>With it</strong>, the lease survives ownership changes. It also protects <strong>them</strong>: if the lease survives, their rent stream survives too.</div>
+  <div class="qa-data"><b>Data:</b> SNDA is industry-standard for any commercial lease where the tenant is making material capital investments. Required by all institutional lenders and most regional banks.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q4.2</span>"What if my lender refuses to sign the SNDA?"</div>
+  <div class="qa-a">Backup paths: <strong>(a)</strong> We negotiate directly with the lender on alternate language — most banks will sign SNDAs because they prefer rent-paying tenants in foreclosure scenarios. <strong>(b)</strong> If the lender refuses outright, the deal doesn't close — we'd absorb the pre-construction costs and walk. We can't put $1.4M of equipment at risk without lien protection.</div>
+  <div class="qa-data"><b>Data:</b> SNDA refusal in commercial real estate is rare (industry estimates &lt;5% of cases). Usually indicates stressed lender or unusual loan covenants.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q4.3</span>"End of lease — who removes the equipment? Who repaves?"</div>
+  <div class="qa-a">Future Tech, at our cost. Lease specifies: <strong>complete equipment removal, asphalt restoration to existing standards, electrical decommissioning, and final site survey before turnover</strong>. Triggered by lease expiration or earlier mutual termination. We post a removal/restoration bond at lease signing so the landlord has financial assurance even if Future Tech vanishes.</div>
+  <div class="qa-data"><b>Data:</b> Industry-standard ground-lease practice — landowner gets land back to original condition. Restoration bond typically 5–10% of original installation cost.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q4.4</span>"Can you assign or sublease to someone else? A competitor?"</div>
+  <div class="qa-a">Assignment allowed <strong>only with landlord consent</strong> (not unreasonably withheld), or to affiliated entities. Sublease prohibited. Tesla's own operator agreement requires Future Tech to remain the named operator of record.</div>
+  <div class="qa-data"><b>Data:</b> Standard commercial ground-lease assignment language. Tesla Supercharger for Business program prohibits operator substitution without Tesla approval.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q4.5</span>"What if I sell the property in Year 7?"</div>
+  <div class="qa-a">The lease <strong>runs with the land</strong>. Any buyer takes the property subject to the lease — including the SNDA, which protects them from being forced to terminate. Many sophisticated buyers see a stable long-term tenant with an escalator as a <strong>value-add</strong>, not a burden.</div>
+  <div class="qa-data"><b>Data:</b> Standard commercial real estate practice. A short-form lease summary recorded at Clark County provides public notice to all potential buyers — they can't claim ignorance of the lease terms.</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 05 — CONSTRUCTION & DISRUPTION -->
+<h2><span class="num">05</span><span>Construction &amp; Disruption</span></h2>
+<p class="sec-text">How long, how loud, how much does it interrupt their tenants' lives.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q5.1</span>"How long is construction? How much disruption to my tenants?"</div>
+  <div class="qa-a">Two phases. <strong>Pre-construction</strong> (permits, lender approvals, equipment order, NV Energy transformer): typically 3–5 months. <strong>Active construction</strong>: typically 4–8 weeks. Work happens daytime hours only (7 AM–5 PM), no weekend work without notice, all tenant access maintained throughout. We can't guarantee specific timelines — NV Energy transformer lead times can stretch the schedule.</div>
+  <div class="qa-data"><b>Data:</b> NV Energy commercial transformer lead times in 2026 range 14–26 weeks based on regional demand. Active construction window for 8-stall V4 + 250 kW solar is typically 4–8 weeks once the transformer is on-site.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q5.2</span>"Will my power be cut during install?"</div>
+  <div class="qa-a">Possibly <strong>1–2 short outages</strong> (4–8 hours each) during NV Energy transformer cutover. All outages scheduled with property management <strong>30+ days in advance</strong>, performed during off-peak hours (typically 6 AM–10 AM weekdays), and announced to tenants ahead of time.</div>
+  <div class="qa-data"><b>Data:</b> Standard NV Energy interconnection practice for new commercial service. Some installations achieve cutover with zero customer-side outage via temporary feed; depends on site electrical layout.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q5.3</span>"What if your contractor damages my building?"</div>
+  <div class="qa-a">All contractors carry <strong>$5M liability insurance, performance bonds, and explicit restoration guarantees</strong>. Future Tech indemnifies Green Leaf against any contractor-caused damage. Repair triggered within 48 hours of any reported incident.</div>
+  <div class="qa-data"><b>Data:</b> Standard pre-construction insurance package for commercial site work. Specifications confirmed before any contractor mobilizes equipment.</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 06 — RISK & WHAT IF -->
+<h2><span class="num">06</span><span>Risk &amp; "What If"</span></h2>
+<p class="sec-text">The scenario questions a careful landlord (or their lawyer) will run through.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q6.1</span>"What if Tesla cancels your host agreement?"</div>
+  <div class="qa-a">Their rent is guaranteed by the <strong>lease, not by Tesla</strong>. If Tesla terminated (extremely rare — would require us to materially breach Tesla's terms), we'd convert the site to non-Tesla CCS DC fast charging and keep operating. The hardware can be substituted; the lease keeps paying regardless.</div>
+  <div class="qa-data"><b>Data:</b> Tesla Supercharger network reached 75,000 stalls and 6.7 TWh delivered in 2025. Host site termination rate is industry-anecdotally negligible — Tesla's incentive is to keep functioning sites open (<i>Tesla Charging blog, March 2026</i>).</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q6.2</span>"Charger fire, driver injury, parking-lot incident — who's liable?"</div>
+  <div class="qa-a">Future Tech is liable for any incident arising from charger operation. We carry <strong>$5M general liability + $5M umbrella</strong>, with Green Leaf named as additional insured on all policies. Cross-indemnification means: their existing property-side issues are covered by their insurance; charger-related issues are covered by ours.</div>
+  <div class="qa-data"><b>Data:</b> Standard insurance structure for tenant-funded EV infrastructure on leased land. Cross-indemnification language is industry-standard in CRE.</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- SECTION 07 — TAX & END-OF-LEASE -->
+<h2><span class="num">07</span><span>Tax &amp; End-of-Lease</span></h2>
+<p class="sec-text">The CPA's questions — and the ones a landlord raises when they're thinking 10 years ahead.</p>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q7.1</span>"Will my property tax assessment go up?"</div>
+  <div class="qa-a">Charging equipment is filed as <strong>Future Tech's personal property</strong> in Nevada — separate from the real estate. Should not trigger reassessment of the land or building. We recommend confirming with the Clark County Assessor before lease execution to lock the treatment in writing.</div>
+  <div class="qa-data"><b>Data:</b> Nevada Revised Statutes §361.030 — trade fixtures owned by the tenant are taxed as personal property to the tenant, not as part of the underlying real estate. Standard treatment confirmed via assessor letter in most commercial deals.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q7.2</span>"Can I terminate early if I want to redevelop or sell?"</div>
+  <div class="qa-a">Two structures available: <strong>(a)</strong> Hard no during the 10-year guaranteed term — keeps the deal clean and financeable. <strong>(b)</strong> Landlord termination allowed at Year 10+ with <strong>24-month notice and a termination fee equal to 36 months of base rent</strong>. Future Tech retains right-of-first-refusal on any redevelopment plan.</div>
+  <div class="qa-decide">DECIDE: Hard-no termination or termination-fee structure? Sophisticated landlords will ask.</div>
+</div>
+
+<div class="qa">
+  <div class="qa-q"><span class="qa-num">Q7.3</span>"At Year 10 renewal, can I reset rent to market rate?"</div>
+  <div class="qa-a">Recommended structure: <strong>3% escalator continues uninterrupted into both renewal periods</strong> — consistent with the "predictable income" pitch. Alternative if they push hard: at Year 10 renewal, both parties commission a fair-market-rent appraisal; new rent set at the <strong>greater of</strong> (a) escalated rate from Year 10 or (b) 90% of fair-market-rent. This caps their downside and gives them upside if the market has shifted.</div>
+  <div class="qa-decide">DECIDE: 3% continues (simple, landlord-friendly) vs FMR floor structure (more complex, more upside)</div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- FOOTER -->
+<div class="fine">
+  <strong>Sources:</strong> Zheng et al., "Effects of EV charging stations on the economic vitality of local businesses," <em>Nature Communications</em>, Sept 2024 · NMHC/Grace Hill Renter Preferences Surveys, 2022 + 2024 · Numerator EV Owner Survey, April 2024 · Convenience &amp; Energy Advisors / Convenience Store News, 2024 · LeaseLock industry data via SWTCH Energy, July 2025 · Tesla Charging blog, March 2026 · Tesla Q4 2025 disclosed financial data · Bloomberg, "How Sheetz Partnered With Tesla," July 2022 · BLS CPI-U historical series · Cushman &amp; Wakefield Las Vegas MarketBeat retail report · IREM industry benchmarks · Clark County Title 30 lighting standards · Nevada Revised Statutes §361.030 · CDC NIOSH noise reference standards.<br><br>
+  <strong>How to read this doc:</strong> Numbers and source citations are from project research files (executive summary research dated May 1, 2026) and targeted web verification. Some operational details (NV Energy transformer lead times, specific construction durations) are industry estimates and will vary by site. All "DECIDE" items are open positions Thomas needs to lock <strong>before</strong> the introductory meeting — don't walk in with these undecided.<br><br>
+  <strong>Confidential:</strong> Internal investment-group reference. Not for landlord distribution.
+</div>
+
+<div class="contact">
+  Future Tech 9000, Inc · Investment Group Reference · v1.0 May 2026<br>
+  Las Vegas, Nevada · futuretech9000.com<br>
+  contact@futuretech9000.com
+</div>
+
+</div>
+
+<script>
+const root=document.documentElement;
+function applyTheme(t){
+  root.setAttribute('data-theme',t);
+  try{localStorage.setItem('gll_qa_theme',t);}catch(e){}
+  document.getElementById('theme-btn').textContent=t==='dark'?'◑ Light':'◐ Dark';
+}
+function toggleTheme(){
+  applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+(function(){
+  let saved=null;try{saved=localStorage.getItem('gll_qa_theme');}catch(e){}
+  if(saved){applyTheme(saved);}
+  else{
+    const dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(dark?'dark':'light');
+  }
+})();
+</script>
+
+</body>
+</html>
