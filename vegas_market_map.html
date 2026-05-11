@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Las Vegas EV Charging Market — Future Tech 9000</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c10;
+  --panel:#13161c;
+  --panel-2:#1a1e26;
+  --border:#252b35;
+  --border-strong:#3a4150;
+  --text:#e8eaef;
+  --muted:#7d8590;
+  --muted-2:#a8b0bd;
+  --tesla:#e4002b;
+  --gll:#fbbf24;
+  --gll-glow:rgba(251,191,36,0.55);
+  --cp:#06b6d4;
+  --ea:#8b5cf6;
+  --evgo:#22c55e;
+  --shell:#eab308;
+  --other:#94a3b8;
+  --highway:#475569;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;height:100%;overflow:hidden}
+
+.app{display:grid;grid-template-columns:300px 1fr;height:100vh}
+@media (max-width:768px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}}
+
+/* SIDEBAR */
+.sb{background:var(--panel);border-right:1px solid var(--border);padding:18px;overflow-y:auto}
+@media (max-width:768px){.sb{border-right:none;border-bottom:1px solid var(--border);padding:12px;max-height:34vh}}
+
+.brand{font-family:'Fraunces',serif;font-size:22px;font-weight:900;letter-spacing:-0.02em;margin-bottom:2px}
+.subtitle{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--gll);text-transform:uppercase;margin-bottom:18px;font-weight:700}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.stat{background:var(--panel-2);border:1px solid var(--border);padding:10px;border-radius:6px}
+.stat-num{font-family:'Fraunces',serif;font-size:22px;font-weight:800;line-height:1;margin-bottom:3px}
+.stat-num.tesla{color:var(--tesla)}
+.stat-num.gll{color:var(--gll)}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;font-weight:600}
+
+.section-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin:18px 0 8px;font-weight:700}
+
+.legend-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:13px;transition:.15s;user-select:none}
+.legend-row:hover{background:var(--panel-2)}
+.legend-row.off{opacity:0.35}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.3)}
+.dot.tesla{background:var(--tesla)}
+.dot.gll{background:var(--gll);box-shadow:0 0 6px var(--gll-glow);width:13px;height:13px}
+.dot.cp{background:var(--cp)}
+.dot.ea{background:var(--ea)}
+.dot.evgo{background:var(--evgo)}
+.dot.shell{background:var(--shell)}
+.dot.other{background:var(--other)}
+.legend-row .ct{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted-2);font-weight:700}
+
+.callout{background:linear-gradient(135deg,rgba(251,191,36,0.10),rgba(251,191,36,0.02));border:1px solid rgba(251,191,36,0.4);border-left:3px solid var(--gll);padding:12px;border-radius:6px;margin-top:18px}
+.callout-title{font-family:'Fraunces',serif;font-size:14px;font-weight:800;color:var(--gll);margin-bottom:6px}
+.callout p{font-size:12px;color:var(--muted-2);line-height:1.5}
+.callout strong{color:var(--text)}
+
+.footer-note{font-size:10px;color:var(--muted);margin-top:16px;line-height:1.5;padding-top:12px;border-top:1px solid var(--border)}
+
+/* MAP */
+.mp-wrap{position:relative;background:#0a0c10;overflow:hidden}
+canvas{display:block;cursor:crosshair;width:100%;height:100%}
+
+.mp-hdr{position:absolute;top:14px;left:14px;background:rgba(19,22,28,0.92);backdrop-filter:blur(8px);border:1px solid var(--border);padding:10px 14px;border-radius:8px;z-index:50;max-width:300px}
+.mp-hdr h2{font-family:'Fraunces',serif;font-size:16px;font-weight:800;letter-spacing:-0.01em;margin-bottom:2px}
+.mp-hdr p{font-size:11px;color:var(--muted)}
+
+.mp-zoom{position:absolute;bottom:14px;right:14px;display:flex;flex-direction:column;gap:4px;z-index:50}
+.zb{width:36px;height:36px;background:rgba(19,22,28,0.92);border:1px solid var(--border);color:var(--text);font-size:18px;border-radius:6px;cursor:pointer;backdrop-filter:blur(8px)}
+.zb:hover{background:var(--panel-2);border-color:var(--gll)}
+
+/* TOOLTIP */
+.tip{position:fixed;background:rgba(19,22,28,0.97);backdrop-filter:blur(12px);border:1px solid var(--border-strong);border-radius:10px;padding:0;font-size:12px;width:260px;z-index:100;display:none;box-shadow:0 12px 32px rgba(0,0,0,0.6)}
+.tip.show{display:block;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.tip-hdr{padding:10px 38px 10px 13px;border-bottom:1px solid var(--border);position:relative}
+.tip-name{font-size:13px;font-weight:700;line-height:1.3}
+.tip-net{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:0.5px}
+.tip-close{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;font-weight:700}
+.tip-close:hover{background:var(--tesla);color:#fff;border-color:var(--tesla)}
+.tip-body{padding:10px 13px;font-size:11px;line-height:1.5}
+.tip-row{display:flex;justify-content:space-between;padding:3px 0;color:var(--muted-2)}
+.tip-row b{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+.tip-addr{font-size:10px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dotted var(--border);line-height:1.4}
+
+/* Distance ring marker for GLL */
+.gll-pulse{position:absolute;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="brand">Las Vegas EV Market</div>
+  <div class="subtitle">⚡ Future Tech 9000</div>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-num tesla" id="ct-tesla">34</div><div class="stat-lbl">Tesla SC</div></div>
+    <div class="stat"><div class="stat-num" id="ct-comp">47</div><div class="stat-lbl">Competitor DCFC</div></div>
+    <div class="stat"><div class="stat-num gll">3.8%</div><div class="stat-lbl">NV EV %</div></div>
+    <div class="stat"><div class="stat-num">73K</div><div class="stat-lbl">Median Income</div></div>
+  </div>
+
+  <div class="section-title">Networks</div>
+  <div class="legend-row" data-net="gll" onclick="toggleNet('gll')">
+    <div class="dot gll"></div>Green Leaf Lotus<span class="ct">SITE</span>
+  </div>
+  <div class="legend-row" data-net="tesla" onclick="toggleNet('tesla')">
+    <div class="dot tesla"></div>Tesla Supercharger<span class="ct" id="lc-tesla">34</span>
+  </div>
+  <div class="legend-row" data-net="cp" onclick="toggleNet('cp')">
+    <div class="dot cp"></div>ChargePoint<span class="ct" id="lc-cp">15</span>
+  </div>
+  <div class="legend-row" data-net="ea" onclick="toggleNet('ea')">
+    <div class="dot ea"></div>Electrify America<span class="ct" id="lc-ea">12</span>
+  </div>
+  <div class="legend-row" data-net="evgo" onclick="toggleNet('evgo')">
+    <div class="dot evgo"></div>EVgo<span class="ct" id="lc-evgo">2</span>
+  </div>
+  <div class="legend-row" data-net="shell" onclick="toggleNet('shell')">
+    <div class="dot shell"></div>Shell Recharge<span class="ct" id="lc-shell">1</span>
+  </div>
+  <div class="legend-row" data-net="other" onclick="toggleNet('other')">
+    <div class="dot other"></div>Other / Dealer<span class="ct" id="lc-other">17</span>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">📍 The Procyon Opportunity</div>
+    <p><strong>Closest Tesla SC: 1.9 miles.</strong> Closest competitor public DCFC: 3+ miles (nearby chargers are dealer-only). Site sits inside a charging hole on the I-15 / Strip approach corridor.</p>
+  </div>
+
+  <div class="footer-note">
+    Source: US DOE NREL Alternative Fuels Data Center (Apr 2026). All public DC fast charging stations within Clark County metro shown. State EV penetration from US DOE / Experian.
+  </div>
+</aside>
+
+<!-- MAP -->
+<main class="mp-wrap">
+  <div class="mp-hdr">
+    <h2>Vegas Charging Network</h2>
+    <p>I-15 corridor · 81 DC fast stations · Tap a marker for details</p>
+  </div>
+  <canvas id="cv"></canvas>
+  <div class="mp-zoom">
+    <button class="zb" onclick="zoomIn()">+</button>
+    <button class="zb" onclick="zoomOut()">−</button>
+    <button class="zb" onclick="resetView()" title="Reset" style="font-size:13px">⌂</button>
+  </div>
+  <div class="tip" id="tip"></div>
+</main>
+
+</div>
+
+<script>
+/* ═══════════════ DATA ═══════════════ */
+const STATIONS=[{"name": "Railroad Pass Hotel and Casino Travel Center - Tesla Superch", "lat": 35.9709, "lng": -114.9107, "net": "tesla", "ports": 12, "address": "2800 S Boulder Hwy, Henderson"}, {"name": "Town Square Las Vegas - Tesla Supercharger", "lat": 36.0707, "lng": -115.1729, "net": "tesla", "ports": 10, "address": "6509 S Las Vegas Blvd., Las Vegas"}, {"name": "Las Vegas, NV - Bridger Avenue - Tesla Supercharger", "lat": 36.1659, "lng": -115.1387, "net": "tesla", "ports": 6, "address": "701 Bridger Ave, Las Vegas"}, {"name": "Primm Valley Resort & Casino - Tesla Supercharger", "lat": 35.6107, "lng": -115.388, "net": "tesla", "ports": 42, "address": "31900 Las Vegas Blvd S, Primm"}, {"name": "Las Vegas South Premium Outlets (Las Vegas, NV)", "lat": 36.0566, "lng": -115.1685, "net": "ea", "ports": 6, "address": "7400 Las Vegas Blvd S, Las Vegas"}, {"name": "The Linq Promenade - Tesla Supercharger", "lat": 36.1166, "lng": -115.1683, "net": "tesla", "ports": 24, "address": "3545 South Las Vegas Boulevard, Las Vegas"}, {"name": "Tivoli Village - Tesla Supercharger", "lat": 36.1688, "lng": -115.2866, "net": "tesla", "ports": 8, "address": "400 South Rampart Boulevard, Las Vegas"}, {"name": "B&D PROP MGMT 2625 ST ROSE", "lat": 36.0144, "lng": -115.103, "net": "cp", "ports": 1, "address": "2625 St Rose Pkwy, Henderson"}, {"name": "B&D PROP MGMT 2645 ST ROSE", "lat": 36.0143, "lng": -115.1032, "net": "cp", "ports": 1, "address": "2645 St Rose Pkwy, Henderson"}, {"name": "JLRLV PUPLIC WEST DC", "lat": 36.0658, "lng": -115.2321, "net": "cp", "ports": 1, "address": "6425 Roy Horn Way, Las Vegas"}, {"name": "Terrible Herbst", "lat": 36.1972, "lng": -115.185, "net": "other", "ports": 1, "address": "22625 Highway-161, Jean"}, {"name": "Las Vegas North Premium Outlets - Tesla Supercharger", "lat": 36.166, "lng": -115.159, "net": "tesla", "ports": 8, "address": "875 South Grand Central Parkway, Las Vegas"}, {"name": "Walmart 3655 (Summerlin, NV)", "lat": 36.2199, "lng": -115.324, "net": "ea", "ports": 4, "address": "10440 W CHEYENNE AVENUE, Las Vegas"}, {"name": "Sam's Club 4974 (North Las Vegas, NV)", "lat": 36.2411, "lng": -115.1126, "net": "ea", "ports": 4, "address": "2650 E Craig Rd, North Las Vegas"}, {"name": "Forum Shops at Caesars Palace (Las Vegas, NV)", "lat": 36.1197, "lng": -115.1769, "net": "ea", "ports": 6, "address": "3500 S Las Vegas Blvd, Las Vegas"}, {"name": "Site 2", "lat": 36.2831, "lng": -115.0291, "net": "other", "ports": 2, "address": "6585 Speedway Blvd, Las Vegas"}, {"name": "Walmart 4356 (SW Las Vegas, NV)", "lat": 36.0646, "lng": -115.2472, "net": "ea", "ports": 4, "address": "7200 ARROYO CROSSING PKWY, Las Vegas"}, {"name": "Target T1524 (Spring Valley, NV)", "lat": 36.1148, "lng": -115.3106, "net": "ea", "ports": 4, "address": "4155 S Grand Canyon Dr, Las Vegas"}, {"name": "Target T0265 (Paradise, NV)", "lat": 36.1157, "lng": -115.1393, "net": "ea", "ports": 4, "address": "4001 S Maryland Pkwy, Las Vegas"}, {"name": "Walmart 2838 (Henderson, NV)", "lat": 36.0621, "lng": -115.0335, "net": "ea", "ports": 4, "address": "540 MARKS ST, Henderson"}, {"name": "Kroger Smiths 354 (Whitney, NV)", "lat": 36.1167, "lng": -115.0916, "net": "ea", "ports": 4, "address": "3850 E Flamingo Rd, Las Vegas"}, {"name": "Tahiti Village Garage", "lat": 36.058, "lng": -115.1687, "net": "other", "ports": 1, "address": "7235 Haven St, Las Vegas"}, {"name": "McCarran Marketplace - Tesla Supercharger", "lat": 36.0831, "lng": -115.1204, "net": "tesla", "ports": 16, "address": "5825  South Eastern Avenue, Las Vegas"}, {"name": "Kroger Smiths 305 (Sunrise, NV)", "lat": 36.1739, "lng": -115.0964, "net": "ea", "ports": 4, "address": "3602 E Bonanza Rd, Las Vegas"}, {"name": "Las Vegas, NV - East Sahara Avenue - Tesla Supercharger", "lat": 36.1453, "lng": -115.1029, "net": "tesla", "ports": 12, "address": "3250  East Sahara Avenue, Las Vegas"}, {"name": "JIM MARSH WEST SIDE", "lat": 36.2766, "lng": -115.2819, "net": "cp", "ports": 1, "address": "8555 W Centennial Pkwy, Las Vegas"}, {"name": "WinCo Las Vegas #113", "lat": 36.2704, "lng": -115.2089, "net": "evgo", "ports": 4, "address": "6101 N Decatur Blvd, Las Vegas"}, {"name": "Centennial Center - Tesla Supercharger", "lat": 36.2716, "lng": -115.2655, "net": "tesla", "ports": 8, "address": "7860  West Tropical Parkway, Las Vegas"}, {"name": "Tivoli Village - Tesla Supercharger", "lat": 36.168, "lng": -115.2849, "net": "tesla", "ports": 12, "address": "400 S Rampart Blvd, Las Vegas"}, {"name": "L446 1", "lat": 36.2732, "lng": -115.2652, "net": "cp", "ports": 1, "address": "6200 Centennial Center Blvd, Las Vegas"}, {"name": "L446 2", "lat": 36.274, "lng": -115.266, "net": "cp", "ports": 1, "address": "6200 Centennial Center Blvd, Las Vegas"}, {"name": "Las Vegas Convention Center - Platinum Lot - Tesla Superchar", "lat": 36.1288, "lng": -115.1438, "net": "tesla", "ports": 8, "address": "3356 South University Center Drive, Las Vegas"}, {"name": "Prizm Outlets (Primm, NV)", "lat": 35.606, "lng": -115.3891, "net": "ea", "ports": 6, "address": "32100 S Las Vegas Blvd, Primm"}, {"name": "Las Vegas Convention Center - Silver Lot 3 - Tesla Superchar", "lat": 36.1282, "lng": -115.1545, "net": "tesla", "ports": 12, "address": "3150 Paradise Rd, Las Vegas"}, {"name": "Las Vegas South Premium Outlets - Tesla Supercharger", "lat": 36.0567, "lng": -115.1703, "net": "tesla", "ports": 28, "address": "7400 Las Vegas Blvd S, Las Vegas"}, {"name": "Red Rock Resort & Casino - Tesla Supercharger", "lat": 36.158, "lng": -115.3338, "net": "tesla", "ports": 16, "address": "11011 W Charleston Blvd, Las Vegas"}, {"name": "Craig and Losee Plaza - Tesla Supercharger", "lat": 36.2391, "lng": -115.1161, "net": "tesla", "ports": 12, "address": "2575 E Craig Rd, North Las Vegas"}, {"name": "M Resort - Tesla Supercharger", "lat": 35.9638, "lng": -115.1677, "net": "tesla", "ports": 24, "address": "12300 Las Vegas Blvd S, Henderson"}, {"name": "Green Valley Ranch - Tesla Supercharger", "lat": 36.0225, "lng": -115.0893, "net": "tesla", "ports": 16, "address": "2300 Paseo Verde Pkwy, Henderson"}, {"name": "Craig Marketplace - Tesla Supercharger", "lat": 36.239, "lng": -115.2498, "net": "tesla", "ports": 20, "address": "7121 W Craig Rd, Las Vegas"}, {"name": "Cadillac of Las Vegas", "lat": 36.1437, "lng": -115.2118, "net": "other", "ports": 1, "address": "5185 W Sahara, Las Vegas"}, {"name": "Tropicana Beltway Burger King - Tesla Supercharger", "lat": 36.094, "lng": -115.2971, "net": "tesla", "ports": 8, "address": "5240 S Fort Apache Rd, Las Vegas"}, {"name": "Scottsdale Plaza - Tesla Supercharger", "lat": 36.0301, "lng": -115.1358, "net": "tesla", "ports": 24, "address": "8790 S Maryland Pkwy, Las Vegas"}, {"name": "Winterwood Pavilion", "lat": 36.1462, "lng": -115.0652, "net": "evgo", "ports": 10, "address": "2226 S Nellis Blvd, Las Vegas"}, {"name": "The Arroyo Market Square - Tesla Supercharger", "lat": 36.0622, "lng": -115.2517, "net": "tesla", "ports": 48, "address": "7285 Arroyo Crossing Pkwy, Las Vegas"}, {"name": "SNHD-Decatur Crossing Center - Tesla Supercharger", "lat": 36.1715, "lng": -115.2072, "net": "tesla", "ports": 20, "address": "230 S Decatur Blvd, Las Vegas"}, {"name": "Pahrump, NV - Tesla Supercharger", "lat": 36.2111, "lng": -115.9859, "net": "tesla", "ports": 8, "address": "667 NV-160, Pahrump"}, {"name": "L541 CPE250-PUBLIC-1", "lat": 36.0447, "lng": -114.9864, "net": "cp", "ports": 1, "address": "460 North Boulder Highway, Henderson"}, {"name": "Las Vegas", "lat": 35.9994, "lng": -115.1718, "net": "shell", "ports": 8, "address": "10480 Las Vegas Blvd S, Las Vegas"}, {"name": "Coyote Corner NV", "lat": 36.1469, "lng": -115.9238, "net": "other", "ports": 2, "address": "4960 Manse Rd, Pahrump"}, {"name": "Hoover Dam Lodge and Casino - Tesla Supercharger", "lat": 36.0093, "lng": -114.7863, "net": "tesla", "ports": 16, "address": "18000 US-93, Boulder City"}, {"name": "Ford Country", "lat": 36.049, "lng": -115.0279, "net": "other", "ports": 4, "address": "280 N Gibson Rd, Henderson"}, {"name": "L541 CPE250-SERVICE1", "lat": 36.0449, "lng": -114.9866, "net": "cp", "ports": 1, "address": "460 North Boulder Highway, Henderson"}, {"name": "FINDLAY AUTO ABB STATION2", "lat": 36.1437, "lng": -115.2143, "net": "cp", "ports": 1, "address": "5325 West Sahara Avenue, Las Vegas"}, {"name": "FINDLAY AUTO ABB STATION1", "lat": 36.1437, "lng": -115.2143, "net": "cp", "ports": 1, "address": "5325 West Sahara Avenue, Las Vegas"}, {"name": "Target T1462 (Las Vegas, NV)", "lat": 36.2801, "lng": -115.2644, "net": "ea", "ports": 6, "address": "6480 Sky Pointe Dr, Las Vegas"}, {"name": "Resort World Las Vegas", "lat": 36.1352, "lng": -115.1676, "net": "other", "ports": 20, "address": "2912 S Sammy Davis Jr Dr, Las Vegas"}, {"name": "JS MAZDA LV SLS-PAD", "lat": 36.2756, "lng": -115.2725, "net": "cp", "ports": 1, "address": "6525 Centennial Center Blvd, Las Vegas"}, {"name": "Park Towers at Hughes Center", "lat": 36.1153, "lng": -115.1568, "net": "other", "ports": 2, "address": "Hughes Center Dr, Paradise"}, {"name": "Charleston Valley View Business Park - Tesla Supercharger", "lat": 36.1588, "lng": -115.1911, "net": "tesla", "ports": 16, "address": "3841 W Charleston Blvd, Las Vegas"}, {"name": "Winterwood Pavillion Shopping Mall - Tesla Supercharger", "lat": 36.1448, "lng": -115.0635, "net": "tesla", "ports": 20, "address": "2208 S Nellis Blvd, Las Vegas"}, {"name": "Fairway Chevrolet", "lat": 36.1453, "lng": -115.1069, "net": "other", "ports": 1, "address": "3100 E Sahara Ave, Las Vegas"}, {"name": "Las Vegas, NV", "lat": 36.0665, "lng": -115.1795, "net": "other", "ports": 6, "address": "6605 South Las Vegas Boulevard, Las Vegas"}, {"name": "East Lake Mead - Tesla Supercharger", "lat": 36.1961, "lng": -115.1321, "net": "tesla", "ports": 24, "address": "604 E Lake Mead S Blvd, N Las Vegas"}, {"name": "South Town Center Drive - Tesla Supercharger", "lat": 36.146, "lng": -115.3272, "net": "tesla", "ports": 8, "address": "2475 S Town Center Dr, Las Vegas"}, {"name": "The Twain Center - Tesla Supercharger", "lat": 36.1219, "lng": -115.145, "net": "tesla", "ports": 28, "address": "855 E Twain Ave, Las Vegas"}, {"name": "Otonomus Hotel - Tesla Supercharger", "lat": 36.0867, "lng": -115.2108, "net": "tesla", "ports": 20, "address": "5050 W Russell Rd, Las Vegas"}, {"name": "Gaudin Ford", "lat": 36.0653, "lng": -115.2364, "net": "other", "ports": 2, "address": "6625 W Roy Horn Way, Las Vegas"}, {"name": "Boulevard Mall - Tesla Supercharger", "lat": 36.1257, "lng": -115.1346, "net": "tesla", "ports": 28, "address": "3528 S Maryland Pkwy, Las Vegas"}, {"name": "HEMBN CHARGER 2", "lat": 36.0447, "lng": -115.0249, "net": "cp", "ports": 1, "address": "925 Auto Show Dr, Henderson"}, {"name": "HEMBN CHARGER 1", "lat": 36.0447, "lng": -115.025, "net": "cp", "ports": 1, "address": "925 Auto Show Dr, Henderson"}, {"name": "Windmill Lane Plaza - Tesla Supercharger", "lat": 36.0425, "lng": -115.1526, "net": "tesla", "ports": 8, "address": "500 E Windmill Ln, Las Vegas"}, {"name": "Boulder City Police Department", "lat": 35.9779, "lng": -114.8337, "net": "other", "ports": 2, "address": "1005 Arizona St, Boulder City"}, {"name": "Fountainebleau", "lat": 36.1387, "lng": -115.1604, "net": "other", "ports": 20, "address": "2777 S Las Vegas Blvd, Las Vegas"}, {"name": "Cheba Hut - Tesla Supercharger", "lat": 36.279, "lng": -115.2898, "net": "tesla", "ports": 12, "address": "6480 Kevin Way, Las Vegas"}, {"name": "North Las Vegas Rechargery Relay - W Centennial Pkwy", "lat": 36.2761, "lng": -115.1795, "net": "other", "ports": 6, "address": "2805 W Centennial Pkwy,, North Las Vegas"}, {"name": "Friendly Ford Body Shop", "lat": 36.1891, "lng": -115.2051, "net": "other", "ports": 2, "address": "1650 N. Decatur Blvd., Las Vegas"}, {"name": "Friendly Ford", "lat": 36.1782, "lng": -115.2056, "net": "other", "ports": 2, "address": "660 N. Decatur Blvd., Las Vegas"}, {"name": "Team Ford", "lat": 36.2593, "lng": -115.248, "net": "other", "ports": 4, "address": "5445 Drexel Rd., Las Vegas"}, {"name": "JLR HENDERSON ABB 01", "lat": 36.0535, "lng": -115.0283, "net": "cp", "ports": 1, "address": "360 North Gibson Road, Henderson"}, {"name": "JLR HENDERSON ABB 02", "lat": 36.0537, "lng": -115.0275, "net": "cp", "ports": 1, "address": "360 North Gibson Road, Henderson"}];
+
+// Green Leaf Lotus location
+const GLL={lat:36.146,lng:-115.222,name:'Green Leaf Lotus',addr:'3463 Procyon St, Las Vegas, NV 89102'};
+
+// Major highways (rough polylines for visual context)
+const HWY={
+  i15:[[36.40,-115.40],[36.30,-115.32],[36.21,-115.27],[36.17,-115.22],[36.13,-115.18],[36.07,-115.14],[35.99,-115.10],[35.92,-115.06],[35.84,-115.03]],
+  i215:[[36.21,-115.10],[36.18,-115.20],[36.13,-115.27],[36.06,-115.30],[36.01,-115.27],[35.97,-115.20],[35.95,-115.10]],
+  us95:[[36.40,-115.18],[36.30,-115.20],[36.21,-115.21],[36.17,-115.22],[36.10,-115.18],[36.04,-115.10]],
+  i515:[[36.18,-115.10],[36.14,-115.12],[36.09,-115.13]]
+};
+
+/* ═══════════════ MAP STATE ═══════════════ */
+const cv=document.getElementById('cv');
+const ctx=cv.getContext('2d');
+const tip=document.getElementById('tip');
+
+let W=0,H=0;
+const BOUNDS={minLat:35.85,maxLat:36.40,minLng:-115.55,maxLng:-114.85};
+let zoom=1, panX=0, panY=0;
+let netOn={gll:1,tesla:1,cp:1,ea:1,evgo:1,shell:1,other:1};
+let hoverIdx=-1, selIdx=-1;
+
+function resize(){
+  const r=cv.getBoundingClientRect();
+  W=r.width; H=r.height;
+  cv.width=W*window.devicePixelRatio;
+  cv.height=H*window.devicePixelRatio;
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  ctx.setTransform(window.devicePixelRatio,0,0,window.devicePixelRatio,0,0);
+  draw();
+}
+
+function ll2xy(lat,lng){
+  // Latitude correction for Vegas latitude (~36°N): lng spans need to compress horizontally
+  const latCorr=Math.cos(36*Math.PI/180);
+  const xRange=BOUNDS.maxLng-BOUNDS.minLng;
+  const yRange=BOUNDS.maxLat-BOUNDS.minLat;
+  // Compute aspect-correct map dimensions
+  const mapAspect=(xRange*latCorr)/yRange;
+  const screenAspect=W/H;
+  let mw,mh,ox,oy;
+  if(screenAspect>mapAspect){mh=H*0.92; mw=mh*mapAspect; ox=(W-mw)/2; oy=(H-mh)/2;}
+  else{mw=W*0.92; mh=mw/mapAspect; ox=(W-mw)/2; oy=(H-mh)/2;}
+  const x=ox+((lng-BOUNDS.minLng)/xRange)*mw;
+  const y=oy+(1-(lat-BOUNDS.minLat)/yRange)*mh;
+  return {x:x*zoom+panX, y:y*zoom+panY};
+}
+
+function netColor(net){
+  return {tesla:'#e4002b',cp:'#06b6d4',ea:'#8b5cf6',evgo:'#22c55e',shell:'#eab308',other:'#94a3b8'}[net]||'#94a3b8';
+}
+
+/* ═══════════════ DRAW ═══════════════ */
+function draw(){
+  ctx.fillStyle='#0a0c10'; ctx.fillRect(0,0,W,H);
+
+  // Subtle grid
+  ctx.strokeStyle='rgba(255,255,255,0.03)';
+  ctx.lineWidth=0.5;
+  for(let lat=35.9;lat<=36.4;lat+=0.1){
+    const a=ll2xy(lat,BOUNDS.minLng), b=ll2xy(lat,BOUNDS.maxLng);
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+  for(let lng=-115.5;lng<=-114.9;lng+=0.1){
+    const a=ll2xy(BOUNDS.minLat,lng), b=ll2xy(BOUNDS.maxLat,lng);
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+
+  // Highways
+  ctx.strokeStyle='rgba(71,85,105,0.55)';
+  ctx.lineWidth=Math.max(2,3*Math.sqrt(zoom));
+  ctx.lineCap='round';
+  ['i15','i215','us95','i515'].forEach(k=>{
+    ctx.beginPath();
+    HWY[k].forEach(([lat,lng],i)=>{
+      const{x,y}=ll2xy(lat,lng);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+  });
+
+  // Highway labels
+  ctx.font='bold 10px '+("'JetBrains Mono',monospace");
+  ctx.fillStyle='rgba(148,163,184,0.7)';
+  ctx.textAlign='left';
+  const labels=[
+    {lat:36.30,lng:-115.31,t:'I-15 N'},
+    {lat:35.92,lng:-115.04,t:'I-15 S'},
+    {lat:36.18,lng:-115.18,t:'US-95'},
+    {lat:36.06,lng:-115.31,t:'I-215'},
+  ];
+  labels.forEach(l=>{
+    const{x,y}=ll2xy(l.lat,l.lng);
+    ctx.fillText(l.t,x+4,y);
+  });
+
+  // Strip rough indicator
+  ctx.fillStyle='rgba(251,191,36,0.04)';
+  const strip1=ll2xy(36.16,-115.18); const strip2=ll2xy(36.08,-115.16);
+  ctx.beginPath();
+  ctx.ellipse((strip1.x+strip2.x)/2,(strip1.y+strip2.y)/2,12*zoom,40*zoom,Math.PI/6,0,Math.PI*2);
+  ctx.fill();
+  ctx.font='9px '+("'JetBrains Mono',monospace");
+  ctx.fillStyle='rgba(251,191,36,0.4)';
+  ctx.textAlign='center';
+  const stripMid=ll2xy(36.12,-115.165);
+  ctx.fillText('THE STRIP',stripMid.x,stripMid.y);
+
+  // Stations — competitors first, then Tesla on top
+  const ORDER=['shell','evgo','other','ea','cp','tesla'];
+  ORDER.forEach(net=>{
+    if(!netOn[net])return;
+    STATIONS.forEach((s,i)=>{
+      if(s.net!==net)return;
+      const{x,y}=ll2xy(s.lat,s.lng);
+      if(x<-20||x>W+20||y<-20||y>H+20)return;
+      const isTesla=net==='tesla';
+      const r=(isTesla?4.5:3.5)*Math.sqrt(zoom);
+      ctx.beginPath();
+      ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fillStyle=netColor(net);
+      ctx.fill();
+      ctx.strokeStyle=i===hoverIdx?'#fff':'rgba(255,255,255,0.4)';
+      ctx.lineWidth=i===hoverIdx?1.5:0.6;
+      ctx.stroke();
+    });
+  });
+
+  // GLL — distance rings + glowing marker
+  if(netOn.gll){
+    const{x,y}=ll2xy(GLL.lat,GLL.lng);
+    // 1 mile, 3 mile, 5 mile rings (approx)
+    const milePx=(W/((BOUNDS.maxLng-BOUNDS.minLng)*55))*zoom; // rough
+    [1,3,5].forEach((mi,i)=>{
+      ctx.strokeStyle=`rgba(251,191,36,${0.25-i*0.06})`;
+      ctx.lineWidth=1;
+      ctx.setLineDash([4,4]);
+      ctx.beginPath();
+      ctx.arc(x,y,mi*milePx,0,Math.PI*2);
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+    // Pulsing glow
+    const t=Date.now()/600;
+    const glow=14+Math.sin(t)*3;
+    const grad=ctx.createRadialGradient(x,y,0,x,y,glow*2);
+    grad.addColorStop(0,'rgba(251,191,36,0.6)');
+    grad.addColorStop(1,'rgba(251,191,36,0)');
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.arc(x,y,glow*2,0,Math.PI*2);
+    ctx.fill();
+    // Star marker
+    ctx.fillStyle='#fbbf24';
+    ctx.strokeStyle='#fff';
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.arc(x,y,9,0,Math.PI*2);
+    ctx.fill(); ctx.stroke();
+    // Label
+    ctx.font='bold 11px DM Sans,sans-serif';
+    ctx.fillStyle='#fbbf24';
+    ctx.textAlign='left';
+    ctx.fillText('Green Leaf Lotus',x+14,y+4);
+    ctx.font='9px DM Sans,sans-serif';
+    ctx.fillStyle='rgba(251,191,36,0.7)';
+    ctx.fillText('Proposed 8-stall site',x+14,y+16);
+  }
+}
+
+/* ═══════════════ INTERACTION ═══════════════ */
+function toggleNet(net){
+  netOn[net]=!netOn[net];
+  document.querySelector(`[data-net="${net}"]`).classList.toggle('off',!netOn[net]);
+  draw();
+}
+
+let drag=false,dragX=0,dragY=0,dragMoved=false;
+cv.addEventListener('mousedown',e=>{drag=true;dragMoved=false;dragX=e.clientX-panX;dragY=e.clientY-panY});
+cv.addEventListener('mousemove',e=>{
+  if(drag){
+    const nx=e.clientX-dragX, ny=e.clientY-dragY;
+    if(Math.abs(nx-panX)>8||Math.abs(ny-panY)>8)dragMoved=true;
+    panX=nx; panY=ny; draw();
+  } else {
+    handleHover(e);
+  }
+});
+cv.addEventListener('mouseup',()=>{drag=false});
+cv.addEventListener('mouseleave',()=>{drag=false;hoverIdx=-1;cv.style.cursor='crosshair';draw()});
+cv.addEventListener('click',e=>{
+  if(dragMoved)return;
+  handleClick(e);
+});
+
+cv.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=cv.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  const factor=e.deltaY<0?1.15:0.87;
+  const newZoom=Math.max(0.5,Math.min(8,zoom*factor));
+  panX=mx-(mx-panX)*(newZoom/zoom);
+  panY=my-(my-panY)*(newZoom/zoom);
+  zoom=newZoom;
+  draw();
+},{passive:false});
+
+// Touch
+let pinch=null;
+cv.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){
+    pinch={d:Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY),z:zoom};
+  } else {
+    drag=true; dragMoved=false;
+    dragX=e.touches[0].clientX-panX; dragY=e.touches[0].clientY-panY;
+  }
+},{passive:true});
+cv.addEventListener('touchmove',e=>{
+  if(e.touches.length===2&&pinch){
+    e.preventDefault();
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    zoom=Math.max(0.5,Math.min(8,pinch.z*d/pinch.d));
+    draw();
+  } else if(drag&&e.touches[0]){
+    const nx=e.touches[0].clientX-dragX, ny=e.touches[0].clientY-dragY;
+    if(Math.abs(nx-panX)>8||Math.abs(ny-panY)>8)dragMoved=true;
+    panX=nx; panY=ny; draw();
+  }
+},{passive:false});
+cv.addEventListener('touchend',e=>{
+  if(pinch){pinch=null;return;}
+  if(!dragMoved&&e.changedTouches[0]){
+    handleClick(e.changedTouches[0]);
+  }
+  drag=false;
+});
+
+function handleHover(e){
+  const r=cv.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  let best=-1, bestD=Infinity;
+  STATIONS.forEach((s,i)=>{
+    if(!netOn[s.net])return;
+    const{x,y}=ll2xy(s.lat,s.lng);
+    const d=Math.hypot(mx-x,my-y);
+    if(d<20&&d<bestD){best=i;bestD=d;}
+  });
+  if(best!==hoverIdx){hoverIdx=best;cv.style.cursor=best>=0?'pointer':'crosshair';draw();}
+}
+
+function handleClick(e){
+  const r=cv.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  // Check GLL first
+  if(netOn.gll){
+    const{x,y}=ll2xy(GLL.lat,GLL.lng);
+    if(Math.hypot(mx-x,my-y)<24){
+      showGLL(e.clientX,e.clientY);
+      return;
+    }
+  }
+  let best=-1, bestD=Infinity;
+  STATIONS.forEach((s,i)=>{
+    if(!netOn[s.net])return;
+    const{x,y}=ll2xy(s.lat,s.lng);
+    const d=Math.hypot(mx-x,my-y);
+    if(d<24&&d<bestD){best=i;bestD=d;}
+  });
+  if(best>=0){
+    selIdx=best;
+    showTip(STATIONS[best],e.clientX,e.clientY);
+  }
+}
+
+function showTip(s,cx,cy){
+  // Compute distance from GLL
+  const dist=haversine(GLL.lat,GLL.lng,s.lat,s.lng);
+  const netName={tesla:'Tesla Supercharger',cp:'ChargePoint',ea:'Electrify America',evgo:'EVgo',shell:'Shell Recharge',other:'Other / Dealer'}[s.net]||s.net;
+  tip.innerHTML=`<div class="tip-hdr">
+    <button class="tip-close" onclick="closeTip(event)" aria-label="Close">×</button>
+    <div class="tip-name">${s.name||'Unnamed station'}</div>
+    <div class="tip-net" style="color:${netColor(s.net)}">${netName}</div>
+  </div>
+  <div class="tip-body">
+    <div class="tip-row"><span>DC fast ports</span><b>${s.ports||'—'}</b></div>
+    <div class="tip-row"><span>Distance from Green Leaf Lotus</span><b>${dist.toFixed(1)} mi</b></div>
+    ${s.address?`<div class="tip-addr">${s.address}</div>`:''}
+  </div>`;
+  positionTip(cx,cy);
+  tip.classList.add('show');
+}
+
+function showGLL(cx,cy){
+  // Count nearby competitors
+  const within3 = STATIONS.filter(s => haversine(GLL.lat,GLL.lng,s.lat,s.lng) <= 3).length;
+  const within5 = STATIONS.filter(s => haversine(GLL.lat,GLL.lng,s.lat,s.lng) <= 5).length;
+  const teslaWithin5 = STATIONS.filter(s => s.net==='tesla' && haversine(GLL.lat,GLL.lng,s.lat,s.lng) <= 5).length;
+  tip.innerHTML=`<div class="tip-hdr">
+    <button class="tip-close" onclick="closeTip(event)" aria-label="Close">×</button>
+    <div class="tip-name">📍 Green Leaf Lotus</div>
+    <div class="tip-net" style="color:#fbbf24">Proposed Tesla Supercharger site</div>
+  </div>
+  <div class="tip-body">
+    <div class="tip-row"><span>Address</span><b style="font-size:10px">3463 Procyon St</b></div>
+    <div class="tip-row"><span>Proposed</span><b>8 V4 stalls</b></div>
+    <div class="tip-row"><span>Solar</span><b>250 kW PV</b></div>
+    <div class="tip-row"><span>Tesla SC within 5 mi</span><b>${teslaWithin5}</b></div>
+    <div class="tip-row"><span>All DCFC within 3 mi</span><b>${within3}</b></div>
+    <div class="tip-row"><span>All DCFC within 5 mi</span><b>${within5}</b></div>
+    <div class="tip-addr">On the I-15 / Strip approach corridor — between McCarran-area Tesla density and west-Vegas residential demand.</div>
+  </div>`;
+  positionTip(cx,cy);
+  tip.classList.add('show');
+}
+
+function positionTip(cx,cy){
+  const tw=260, th=260;
+  let left=cx+14, top=cy-30;
+  if(left+tw>window.innerWidth)left=cx-tw-14;
+  if(top<10)top=10;
+  if(top+th>window.innerHeight)top=window.innerHeight-th-10;
+  if(left<10)left=10;
+  tip.style.left=left+'px';
+  tip.style.top=top+'px';
+}
+
+function closeTip(e){
+  if(e){e.stopPropagation();e.preventDefault();}
+  tip.classList.remove('show');
+  selIdx=-1;
+}
+tip.addEventListener('click',e=>e.stopPropagation());
+tip.addEventListener('mousedown',e=>e.stopPropagation());
+tip.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&selIdx>=0)closeTip();
+});
+
+function haversine(lat1,lng1,lat2,lng2){
+  const R=3958.8;
+  const dlat=(lat2-lat1)*Math.PI/180;
+  const dlng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dlat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dlng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+function zoomIn(){zoom=Math.min(8,zoom*1.4);draw();}
+function zoomOut(){zoom=Math.max(0.5,zoom*0.71);draw();}
+function resetView(){zoom=1;panX=0;panY=0;draw();closeTip();}
+
+// Keep GLL pulse animating
+setInterval(()=>{if(netOn.gll)draw();},120);
+
+window.addEventListener('resize',resize);
+resize();
+</script>
+
+</body>
+</html>

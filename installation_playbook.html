@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15171a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
+<title>Installation Playbook · Tesla Supercharger + Solar PV</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="light"]{
+  --paper:#f5f0e6;
+  --paper-2:#ede5d2;
+  --paper-3:#e0d6bf;
+  --ink:#15171a;
+  --ink-soft:#3a3d44;
+  --muted:#6a6964;
+  --rule:#1a1a1a;
+  --rule-soft:#c8c1ad;
+  --accent:#7d2a2a;
+  --accent-tint:rgba(125,42,42,.10);
+  --gold:#a07a2c;
+  --gold-tint:rgba(160,122,44,.14);
+  --green:#2d5e3e;
+  --green-tint:rgba(45,94,62,.12);
+  --blue:#2a4a7d;
+  --blue-tint:rgba(42,74,125,.10);
+  --grain:radial-gradient(circle at 0% 0%, rgba(0,0,0,.015) 1px, transparent 1px),radial-gradient(circle at 100% 100%, rgba(0,0,0,.015) 1px, transparent 1px);
+}
+:root[data-theme="dark"]{
+  --paper:#15171a;
+  --paper-2:#1f2226;
+  --paper-3:#2a2d32;
+  --ink:#f5f0e6;
+  --ink-soft:#d8d2c0;
+  --muted:#9a9586;
+  --rule:#404040;
+  --rule-soft:#333;
+  --accent:#d76060;
+  --accent-tint:rgba(215,96,96,.16);
+  --gold:#dcae5c;
+  --gold-tint:rgba(220,174,92,.16);
+  --green:#6db080;
+  --green-tint:rgba(109,176,128,.16);
+  --blue:#7da4d6;
+  --blue-tint:rgba(125,164,214,.14);
+  --grain:radial-gradient(circle at 0% 0%, rgba(255,255,255,.025) 1px, transparent 1px),radial-gradient(circle at 100% 100%, rgba(255,255,255,.025) 1px, transparent 1px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'DM Sans',-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+body{
+  background-image:var(--grain);
+  background-size:3px 3px;
+  min-height:100vh;
+  transition:background-color .35s ease,color .35s ease;
+}
+
+.shell{max-width:880px;margin:0 auto;padding:32px 22px 60px;position:relative}
+
+.theme-toggle{
+  position:absolute;top:32px;right:22px;
+  background:var(--paper-2);border:1px solid var(--rule);
+  color:var(--ink);font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:1.2px;padding:8px 12px;
+  cursor:pointer;text-transform:uppercase;font-weight:600;transition:.2s;
+}
+.theme-toggle:hover{background:var(--paper-3);border-color:var(--accent)}
+
+/* HEADER */
+.head{padding-bottom:24px;border-bottom:2px solid var(--rule);margin-bottom:30px}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.4px;
+  text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px;
+}
+h1{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:42px;line-height:1.05;letter-spacing:-0.025em;margin-bottom:12px;
+  font-variation-settings:"opsz" 144;
+}
+h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.lede{font-size:17px;color:var(--ink-soft);font-weight:400;line-height:1.55;margin-bottom:14px}
+.meta{
+  display:flex;flex-wrap:wrap;gap:6px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600;
+}
+.meta b{color:var(--ink)}
+
+/* TOC */
+.toc{
+  background:var(--paper-2);border:1px solid var(--rule);padding:18px 22px;margin-bottom:34px;
+}
+.toc-title{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px;
+}
+.toc ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}
+@media (max-width:640px){.toc ol{grid-template-columns:1fr}}
+.toc li{font-size:13px;line-height:1.5}
+.toc a{color:var(--ink-soft);text-decoration:none;display:block;padding:3px 0}
+.toc a:hover{color:var(--accent)}
+.toc a span.tn{
+  display:inline-block;width:24px;font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--accent);font-weight:700;
+}
+
+/* SECTION HEADERS */
+h2{
+  font-family:'Fraunces',serif;font-size:28px;font-weight:800;
+  letter-spacing:-0.02em;margin:42px 0 14px;line-height:1.15;
+  display:flex;align-items:baseline;gap:14px;
+}
+h2 .num{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--accent);font-weight:700;letter-spacing:1.4px;
+}
+h2 em{font-style:italic;font-weight:400;color:var(--accent)}
+
+h3{
+  font-family:'Fraunces',serif;font-size:20px;font-weight:700;
+  margin:24px 0 8px;letter-spacing:-0.01em;line-height:1.25;
+}
+h4{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--accent);font-weight:700;margin:18px 0 8px;
+}
+
+p{margin-bottom:12px;color:var(--ink-soft)}
+p strong{color:var(--ink);font-weight:700}
+p em{color:var(--accent);font-style:italic}
+
+/* CALLOUT BOXES */
+.cal{
+  padding:14px 18px;margin:14px 0 18px;
+  background:var(--paper-2);border-left:3px solid var(--accent);font-size:14px;line-height:1.55;
+}
+.cal.green{border-color:var(--green);background:var(--green-tint)}
+.cal.gold{border-color:var(--gold);background:var(--gold-tint)}
+.cal.blue{border-color:var(--blue);background:var(--blue-tint)}
+.cal-tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.4px;
+  text-transform:uppercase;font-weight:700;display:block;margin-bottom:5px;
+}
+.cal .cal-tag{color:var(--accent)}
+.cal.green .cal-tag{color:var(--green)}
+.cal.gold .cal-tag{color:var(--gold)}
+.cal.blue .cal-tag{color:var(--blue)}
+.cal p{margin-bottom:6px;color:var(--ink-soft)}
+.cal p:last-child{margin-bottom:0}
+
+/* RESPONSIBILITY MATRIX */
+.matrix{
+  margin:14px 0 20px;border:1px solid var(--rule);background:var(--paper-2);
+  font-size:13px;
+}
+.matrix-head{
+  display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr 1fr;
+  background:var(--ink);color:var(--paper);
+  padding:9px 12px;font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;
+}
+.matrix-head div:not(:first-child){text-align:center}
+.matrix-row{
+  display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr 1fr;
+  padding:9px 12px;border-bottom:1px dotted var(--rule-soft);align-items:center;
+}
+.matrix-row:last-child{border-bottom:none}
+.matrix-row > div:not(:first-child){text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
+.cell-y{color:var(--green)}
+.cell-n{color:var(--muted)}
+.cell-p{color:var(--gold)}
+.cell-rl{color:var(--accent)}
+@media (max-width:640px){
+  .matrix-head,.matrix-row{grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;font-size:12px}
+  .matrix-head div,.matrix-row div{padding:0 2px}
+}
+
+/* CHECKLIST */
+.checklist{margin:10px 0 18px;list-style:none;padding:0}
+.checklist li{
+  display:grid;grid-template-columns:auto 1fr;gap:10px;
+  padding:8px 0;border-bottom:1px dotted var(--rule-soft);
+  font-size:14px;line-height:1.5;
+}
+.checklist li:last-child{border-bottom:none}
+.checklist li::before{
+  content:'☐';color:var(--accent);font-size:16px;line-height:1.4;font-weight:700;
+}
+.checklist li b{color:var(--ink);font-weight:700;display:block;margin-bottom:2px}
+.checklist li small{color:var(--muted);font-size:12px;line-height:1.45;display:block}
+
+/* COST TABLE */
+.costs{
+  margin:14px 0 18px;border:1px solid var(--rule);background:var(--paper-2);
+}
+.costs-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  padding:10px 14px;border-bottom:1px dotted var(--rule-soft);font-size:14px;
+}
+.costs-row:last-child{border-bottom:none}
+.costs-row.subtotal{background:var(--paper-3);font-weight:700}
+.costs-row.total{background:var(--ink);color:var(--paper);font-weight:700}
+.costs-row.total .cost-val{color:var(--paper)}
+.cost-lbl{color:var(--ink-soft);flex:1}
+.cost-lbl small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.cost-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink);white-space:nowrap}
+.cost-val.income{color:var(--green)}
+
+/* FOOTER */
+.footer{
+  margin:48px 0 16px;padding-top:20px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--muted);line-height:1.6;
+}
+.footer h4{margin-top:0}
+.contact{
+  margin-top:14px;padding:13px 15px;
+  background:var(--paper-2);border-left:3px solid var(--accent);
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink);
+  letter-spacing:0.4px;line-height:1.6;
+}
+
+/* INLINE TERMS */
+.term{
+  border-bottom:1px dotted var(--accent);
+  font-weight:600;color:var(--ink);
+}
+
+/* SOURCES INLINE */
+sup{
+  color:var(--accent);font-size:10px;font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+}
+sup a{color:var(--accent);text-decoration:none}
+sup a:hover{text-decoration:underline}
+
+@media print{
+  .theme-toggle{display:none}
+  body{background:white;font-size:11pt}
+  h2{page-break-after:avoid;font-size:18pt}
+  h3{page-break-after:avoid}
+  .cal,.matrix,.costs{page-break-inside:avoid}
+  .shell{max-width:none;padding:0.5in}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">◐ Dark</button>
+
+<header class="head">
+  <div class="eyebrow">INTERNAL PLAYBOOK · v2.0 · TESLA-AUDITED</div>
+  <h1>Tesla Supercharger<br>+ Solar PV<br><em>Installation Playbook</em></h1>
+  <p class="lede">Everything Future Tech 9000 needs to know to build the Green Leaf Lotus Supercharger station: who does what, what each thing costs, where the deadlines are, and where the money is.</p>
+  <div class="meta">
+    <span><b>FOR</b> Future Tech 9000, Inc</span>
+    <span><b>SITE</b> 3463 Procyon St</span>
+    <span><b>v2.0 · MAY 2026</b></span>
+  </div>
+</header>
+<div class="cal blue" style="margin:18px 0 0">
+  <span class="cal-tag">Audited against Tesla.com — April 30, 2026</span>
+  <p>This playbook was reviewed against Tesla's official Supercharger for Business program documentation, the Tesla configurator (electrek.co coverage April 2026), and the EV Report's program breakdown (March 2026). Three corrections incorporated: (1) Tesla covers credit card processing fees, (2) Tesla provides project engineering support during installation, and (3) several services we hadn't credited Tesla for — Google Maps integration, 3D Site Maps, Trip Planner routing, and host-side congestion/TOU pricing tools — have been added. Costs and the program model verified.</p>
+</div>
+
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <ol>
+    <li><a href="#overview"><span class="tn">01</span>Project Overview &amp; Responsibility Matrix</a></li>
+    <li><a href="#tesla-prog"><span class="tn">02</span>The Tesla Program — What We Bought</a></li>
+    <li><a href="#zoning"><span class="tn">03</span>Zoning &amp; Land-Use (Clark County)</a></li>
+    <li><a href="#permits"><span class="tn">04</span>Permits &amp; Inspections</a></li>
+    <li><a href="#power"><span class="tn">05</span>Power: NV Energy Interconnection</a></li>
+    <li><a href="#solar-tech"><span class="tn">06</span>Solar PV: Engineering &amp; Interconnection</a></li>
+    <li><a href="#tax"><span class="tn">07</span>Tax Credits &amp; Depreciation</a></li>
+    <li><a href="#prevailing"><span class="tn">08</span>Prevailing Wage / Apprenticeship</a></li>
+    <li><a href="#nepa"><span class="tn">09</span>SBA Financing &amp; NEPA Trigger</a></li>
+    <li><a href="#insurance"><span class="tn">10</span>Insurance Stack</a></li>
+    <li><a href="#tesla-vs"><span class="tn">11</span>Tesla Provides vs Does Not</a></li>
+    <li><a href="#timeline"><span class="tn">12</span>Master Timeline &amp; Critical Path</a></li>
+    <li><a href="#money"><span class="tn">13</span>Money on the Table</a></li>
+  </ol>
+</div>
+
+<!-- SECTION 01 -->
+<h2 id="overview"><span class="num">01</span><span>Project Overview &amp; Responsibility Matrix</span></h2>
+
+<p>The Green Leaf Lotus build is an <strong>8-stall Tesla V4 Supercharger plus a 250 kW DC-coupled solar PV array</strong>, financed entirely by Future Tech 9000 on land leased from Green Leaf Partners. Total project cost: $1,391,500.</p>
+
+<div class="cal green">
+  <span class="cal-tag">v2.0 · Tesla Audit Findings (May 2026)</span>
+  <p><strong>What changed since v1.0:</strong> Audited every "Tesla provides / does not" claim against Tesla's official Supercharger for Business pages and public configurator (April 2026).</p>
+  <p><strong>Hardware price reconciled:</strong> Tesla's configurator quotes $500,000 fixed for an 8-post V4 site (was estimated at ~$320K in early v1.0 drafts). Project budget already accounts for this.</p>
+  <p><strong>Service capacity revised up:</strong> V4 Cabinet is rated at <strong>1.2 MW shared across 8 posts</strong>, not 700 kW. NV Energy interconnection sized for 1500 kVA pad-mount transformer.</p>
+  <p><strong>Tesla provides MORE than v1.0 credited:</strong> assigned project engineer who reviews drawings before permit submission, shipping &amp; logistics, credit-card processing fees absorbed in the $0.10/kWh fee, Trip Planner + Google Maps integration, host pricing portal, preventative maintenance, ongoing remote diagnostics. Several were missed in v1.0.</p>
+  <p><strong>Configurator-modeled site economics for Vegas (~320 kWh/post/day):</strong> ~$420K/yr revenue at $0.45/kWh retail, ~$208K/yr gross profit before fixed costs, ~5 year payback. Vegas falls between Texas and Florida on Tesla's published model.</p>
+</div>
+
+<p>This is the <strong>standalone operator model</strong> — Future Tech 9000 owns the equipment, holds the operator agreement with Tesla, and keeps the charging revenue (paying Tesla a per-kWh network fee). It is <em>not</em> the Tesla Host program where Tesla owns the asset and pays you a share of revenue. The standalone model is more work and more capital, but materially more revenue and full control.</p>
+
+<h4>Who Does What — At-a-Glance</h4>
+
+<div class="matrix">
+  <div class="matrix-head">
+    <div>Activity</div>
+    <div>Future Tech</div>
+    <div>Tesla</div>
+    <div>NV Energy</div>
+    <div>Green Leaf</div>
+  </div>
+  <div class="matrix-row"><div>Site selection &amp; lease negotiation</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-y">●</div></div>
+  <div class="matrix-row"><div>Site survey &amp; civil engineering</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Tesla equipment design / approved plans</div><div class="cell-p">◐</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Building &amp; electrical permits</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-rl">◇</div></div>
+  <div class="matrix-row"><div>Service interconnection application</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-y">●</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Transformer &amp; primary service install</div><div class="cell-p">◐</div><div class="cell-n">○</div><div class="cell-y">●</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Trenching, conduit, switchgear</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Tesla cabinet &amp; post installation</div><div class="cell-p">◐</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Solar PV design &amp; install</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Solar net-metering interconnection</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-y">●</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Stations &amp; software commissioning</div><div class="cell-n">○</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Charger 24/7 driver support</div><div class="cell-n">○</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Day-to-day site cleanliness</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-rl">◇</div></div>
+  <div class="matrix-row"><div>Insurance on the equipment</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+  <div class="matrix-row"><div>Notify property carrier of EV chargers</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-y">●</div></div>
+  <div class="matrix-row"><div>Property tax on Future Tech equipment</div><div class="cell-y">●</div><div class="cell-n">○</div><div class="cell-n">○</div><div class="cell-n">○</div></div>
+</div>
+<p style="font-size:12px;color:var(--muted);margin-top:-8px"><b>Legend:</b> <span class="cell-y">●</span> Lead &nbsp; <span class="cell-p">◐</span> Shared/Coordinates &nbsp; <span class="cell-rl">◇</span> Reasonable cooperation only &nbsp; <span class="cell-n">○</span> Not involved</p>
+
+<!-- SECTION 02 -->
+<h2 id="tesla-prog"><span class="num">02</span><span>The Tesla Program — What We Bought</span></h2>
+
+<p>Tesla offers two business models for site hosts. Knowing which one we're in is foundational.</p>
+
+<h3>Tesla Host (the legacy model)</h3>
+<p>Tesla owns the equipment, designs the install, hires the contractors, pays the bills, keeps the revenue. The host gets a percentage of revenue or a flat lease payment. <strong>Pros:</strong> zero capital required from the host. <strong>Cons:</strong> no control over pricing, no upside in volume growth, Tesla can relocate the equipment with notice. Today this is rare and reserved for highest-tier corridor sites Tesla strategically wants. <strong>Not our model.</strong></p>
+
+<h3>Supercharger for Business / Standalone (our model)</h3>
+<p>Future Tech 9000 buys the hardware from Tesla, pays for installation and infrastructure, owns the asset, and operates the station. Tesla provides the in-vehicle navigation routing, Trip Planner, Google Maps integration, the customer-facing app and billing, host-controlled pricing, payment processing (including credit card fees), the 97% uptime SLA, 24/7 driver support, and software updates. <strong>This is what the Green Leaf project is.</strong></p>
+
+<p>Tesla's published configurator<sup><a href="#ref-electrek-config">12</a></sup> as of April 2026 prices an 8-post V4 site at <strong>$500,000 hardware + $440,000 medium-tier installation = $940,000 all-in.</strong> Our project budget of $1,391,500 includes that $940K plus the 250 kW solar canopy ($125K), site contingency ($75K), and Future Tech 9000's deal reserves and soft costs. The hardware/install split is consistent with Tesla's transparency disclosures. Tesla's per-kWh network fee is $0.10/kWh of charging revenue.</p>
+
+<div class="cal">
+  <span class="cal-tag">Important</span>
+  <p>Tesla's standard Supercharger Agreement<sup><a href="#ref-tesla-agmt">2</a></sup> includes a self-operative SNDA clause favoring Tesla. In our case Future Tech 9000 is the equivalent of "Tesla" in that template — when we draft Green Leaf's lease, we mirror this protection: lender consent, non-disturbance, recordable memo. Without it, Green Leaf's bank could wipe out our $1.4M of equipment in a foreclosure.</p>
+</div>
+
+<h3>What Tesla provides (per Tesla program docs<sup><a href="#ref-tesla-bus-prog">11</a></sup>)</h3>
+<ul class="checklist">
+  <li><b>Approved plans &amp; equipment specs</b><small>Standardized site layouts, electrical drawings, equipment specifications for V4 hardware.</small></li>
+  <li><b>Project engineering support during installation</b><small>A Tesla Design Engineer guides the customer through the install process. They review our contractor's work, sign off on key phases.</small></li>
+  <li><b>Commissioning</b><small>Tesla activates the cabinets after our electrical and NV Energy energization is complete. ~2 weeks per Tesla's published timeline.</small></li>
+  <li><b>Site listing in Tesla in-car navigation &amp; Trip Planner</b><small>Drivers are automatically routed to our station based on state of charge, efficiency, site availability, and weather. Tesla's Trip Planner uses anonymous geofenced data to predict stall availability at arrival.</small></li>
+  <li><b>Google Maps integration</b><small>Tesla and Google announced (March 2026) that Supercharger for Business sites appear in both Tesla apps AND Google Maps with forecasted stall availability and real-time wait times.</small></li>
+  <li><b>3D Site Maps</b><small>Pilot feature. Shows our Supercharger layout, nearby businesses, and live availability to drivers.</small></li>
+  <li><b>Pricing portal &amp; pricing tools</b><small>Future Tech 9000 sets our own retail pricing through a dedicated host portal. Tools include congestion fees and time-of-use pricing to manage demand.</small></li>
+  <li><b>Payment processing — including credit card processing fees</b><small>Tesla collects from drivers and remits to us monthly. <strong>Credit card processing fees are covered by Tesla, not deducted from our share.</strong> This is real value we hadn't initially credited.</small></li>
+  <li><b>Credit card dispute handling</b><small>Tesla manages chargebacks and select dispute resolution.</small></li>
+  <li><b>97% uptime SLA</b><small>Industry-leading. Tesla operates and remotely monitors. Network Operations Center verifies escalations and disruptions 24/7/365.</small></li>
+  <li><b>Remote diagnostics, automatic triage, and preventative maintenance</b><small>Tesla detects problems remotely and dispatches their own technicians (parts on hand, direct feedback to engineering) to repair.</small></li>
+  <li><b>24/7 driver support — Tesla and non-Tesla EVs</b><small>Phone support for all EV drivers using our station, not just Tesla owners.</small></li>
+  <li><b>Software updates and pricing model adjustments</b><small>OTA firmware updates throughout the lease term. Battery preconditioning, AC ripple current heating to optimize charge speeds.</small></li>
+  <li><b>Replacement cabinets if equipment fails under warranty</b><small>Standard Tesla equipment warranty. Beyond warranty, parts at our cost.</small></li>
+</ul>
+
+<h3>What Tesla does NOT do</h3>
+<ul class="checklist">
+  <li><b>Pay for the chargers</b><small>We buy the cabinets, posts, and switchgear at Tesla's wholesale price.</small></li>
+  <li><b>Pay for installation</b><small>Trenching, conduit, transformer pad, concrete, lighting, signage — all on us.</small></li>
+  <li><b>Pay the electric bill</b><small>NV Energy bills Future Tech 9000 directly for the meter that serves the station.</small></li>
+  <li><b>Hold the lease</b><small>We are the tenant. Tesla has no privity with Green Leaf.</small></li>
+  <li><b>Pay property tax on the equipment</b><small>The chargers are personal property of Future Tech 9000. We pay personal property tax to Clark County.</small></li>
+  <li><b>Site maintenance, snow, sweeping, lighting upkeep</b><small>Day-to-day site presentation is on us, even though Tesla maintains the actual chargers.</small></li>
+  <li><b>Insurance on the equipment</b><small>Tesla insures the cabinets in transit. Once installed, we insure them.</small></li>
+</ul>
+
+<!-- SECTION 03 -->
+<h2 id="zoning"><span class="num">03</span><span>Zoning &amp; Land-Use (Clark County)</span></h2>
+
+<p>3463 Procyon St sits in unincorporated Clark County (Spring Valley township). Land-use jurisdiction is the <strong>Clark County Department of Comprehensive Planning</strong>. Permitting is the <strong>Clark County Department of Building &amp; Fire Prevention</strong>.</p>
+
+<h3>Title 30 Unified Development Code</h3>
+<p>Clark County updated Title 30 in August 2023 to <strong>require new and renovated commercial and multifamily buildings to include EV-Capable conduit and dedicated electrical capacity</strong><sup><a href="#ref-cc-title30">3</a></sup>. The county also recognizes EV charging stations as a permitted accessory use in most commercial zones. Practical implication: <em>our zoning fight is much easier than it would have been three years ago</em>. We're not asking for a special exception; we're using land in a way the county has already declared a permitted accessory use.</p>
+
+<h3>What we still need to verify</h3>
+<ul class="checklist">
+  <li><b>Zoning of the parcel itself</b><small>Pull the parcel record from Clark County Assessor and confirm the site is zoned C-2, H-1, or another zone where EV charging is a permitted accessory use. If the parcel is zoned R-3 or U-V (multifamily), we'll likely need a use permit hearing.</small></li>
+  <li><b>Setbacks from property lines</b><small>Tesla cabinet must sit outside required side/rear setbacks. Confirm with site survey.</small></li>
+  <li><b>ADA accessibility</b><small>At least one of the 8 stalls must be ADA-accessible per Clark County code. Tesla's standard layouts include this.</small></li>
+  <li><b>Signage permit</b><small>Tesla branding and wayfinding signs require a separate signage permit. Limited to design Tesla approves.</small></li>
+  <li><b>Parking minimum recalculation</b><small>If the 8 stalls reduce the apartment complex's total parking count below code minimum, Green Leaf will need to evidence that surplus exists. Procyon site has surplus — verify.</small></li>
+</ul>
+
+<div class="cal blue">
+  <span class="cal-tag">Action item</span>
+  <p>Order a <strong>Title Report &amp; Zoning Letter</strong> within Week 1. Clark County records office takes 5-7 business days. Cost ~$400. This is the single document that makes everything else conditional.</p>
+</div>
+
+<!-- SECTION 04 -->
+<h2 id="permits"><span class="num">04</span><span>Permits &amp; Inspections</span></h2>
+
+<p>Clark County issues commercial permits at the Building &amp; Fire Prevention Department, 4701 W. Russell Rd. <strong>Standard commercial review is 21 business days, which extends 10 business days for each correction cycle.</strong><sup><a href="#ref-permitplace">4</a></sup> Most projects go through 1-3 correction cycles.</p>
+
+<h3>Permits we need</h3>
+<ul class="checklist">
+  <li><b>Building Permit</b><small>Covers the concrete pad for the equipment cabinet, foundations for the post stalls, any canopy structure for the solar PV. Plans submitted by a Nevada-licensed engineer.</small></li>
+  <li><b>Electrical Permit</b><small>Covers the trenching, conduit, switchgear, transformer pad work, EV stall wiring. Electrical work by a Nevada-licensed C-2 electrical contractor.</small></li>
+  <li><b>Fire Department Plan Review</b><small>EV charging stations require fire department review for fire suppression, vehicle clearances, and battery thermal-event response. Clark County FD reviews concurrent with building permit.</small></li>
+  <li><b>Signage Permit</b><small>Tesla wayfinding signage at site entrance and stall numbering. Separate permit, ~3 days.</small></li>
+  <li><b>Right-of-Way / Encroachment Permit</b><small>If trenching crosses public right-of-way (sidewalk, street) for utility connection, Public Works issues a separate ROW permit.</small></li>
+  <li><b>Solar PV Building Permit</b><small>Separate from the charging station permit. Clark County uses an expedited solar permit track for systems under 30 kW residential, but our 250 kW commercial system goes through standard review.</small></li>
+</ul>
+
+<h3>Inspections during construction</h3>
+<p>Schedule inspections through Clark County Citizen Access portal or by calling 702-455-3000<sup><a href="#ref-permitplace">4</a></sup>. Each phase needs sign-off before progressing:</p>
+<ol class="checklist">
+  <li><b>Trench inspection</b><small>Before backfill — verify conduit depth and bedding.</small></li>
+  <li><b>Rough electrical</b><small>After conduit is in but before final connections.</small></li>
+  <li><b>Foundation / concrete inspection</b><small>For equipment pad and post foundations.</small></li>
+  <li><b>Final electrical inspection</b><small>Before NV Energy energizes the meter.</small></li>
+  <li><b>Final building / occupancy</b><small>After Tesla commissioning is complete and the site can operate.</small></li>
+</ol>
+
+<div class="cal gold">
+  <span class="cal-tag">Reality check</span>
+  <p>Clark County permits in 2026 are running long. <strong>Plan for 35-45 calendar days from submission to issuance, not 21 business days.</strong> Use an expediter (e.g., Permit Place, Building Engineering Group) — they cost $1,500-$3,000 but typically save 2-3 weeks of correction cycles.</p>
+</div>
+
+<!-- SECTION 05 -->
+<h2 id="power"><span class="num">05</span><span>Power: NV Energy Interconnection</span></h2>
+
+<p>Eight V4 stalls, each capable of 250-325 kW, need a <strong>700-1,000 kW service</strong>. That's a primary-voltage service requiring a new dedicated transformer. NV Energy's process for this is governed by Rule No. 9 (Line Extensions) and Schedule EVCCR-TOU (the EV-specific commercial tariff)<sup><a href="#ref-nve-evccr">5</a></sup>.</p>
+
+<h3>Tariff structure: Schedule EVCCR-TOU</h3>
+<p>EVCCR-TOU is NV Energy's special rate for DC fast charging. Three things to know:</p>
+<ul class="checklist">
+  <li><b>Demand charge reduction</b><small>EVCCR-TOU reduces the standard $/kW demand charge — replaced with a smaller volumetric ($/kWh) adder. This is critical because demand charges otherwise dominate operating costs at low utilization.</small></li>
+  <li><b>10-year transition period</b><small>The reduced rate is in effect from April 2019 through April 2029. After 2029 we transition to whatever NV Energy's then-current EV rate is.</small></li>
+  <li><b>500-meter cap statewide</b><small>EVCCR-TOU is limited to 500 installed meters across all of NV Energy's service territory, first-come first-served. <strong>The cap is being approached.</strong> Apply for the meter as early as possible — losing the rate would add ~$30-50K/yr in demand charges.</small></li>
+</ul>
+
+<h3>Time-of-Use periods</h3>
+<p>EV electricity rates vary by time of day. Off-peak overnight pricing (10 PM - 8 AM) is dramatically cheaper than mid-day peak (June through September, 1 PM - 7 PM). The economic implication: <strong>solar offset matters most during summer afternoons</strong>, exactly when our 250 kW PV array generates most of its output. Designed integration.</p>
+
+<h3>Interconnection process</h3>
+<ol class="checklist">
+  <li><b>Submit Service Application</b><small>Through NV Energy's Builder Services portal. Includes load calculation showing 700-1,000 kW peak draw, single-line diagram, site plan.</small></li>
+  <li><b>NV Energy load study</b><small>Engineering reviews whether the existing distribution feeder can support the new load. If not, an upgrade to the upstream feeder may be required (paid by NV Energy if existing customers benefit, paid by us if dedicated to our project).</small></li>
+  <li><b>Cost estimate &amp; line extension agreement</b><small>NV Energy issues a binding cost estimate. Customer-side costs (transformer pad, primary conduit on our property, switchgear) are ours; utility-side (the transformer itself, primary cable from the pole) is theirs but billed back if dedicated.</small></li>
+  <li><b>Pay deposit &amp; sign agreement</b><small>Typically 50% of the line extension cost up front.</small></li>
+  <li><b>Construction</b><small>NV Energy schedules transformer delivery and primary cable. <strong>This is the long lead — 8-16 weeks for transformer delivery in 2026.</strong> Order the transformer before lease signing if possible.</small></li>
+  <li><b>Energization</b><small>After Clark County final electrical inspection passes, NV Energy energizes the meter. Tesla commissioning starts after energization.</small></li>
+</ol>
+
+<div class="cal">
+  <span class="cal-tag">Critical path</span>
+  <p>The transformer is the longest lead time of the entire project. <strong>Order it Week 1, not Week 10.</strong> If we wait until permits are issued, we add 8-16 weeks to the back end. Pay the deposit even before lease signing if Green Leaf agrees in writing — it's refundable if the deal collapses.</p>
+</div>
+
+<h3>NV Energy DCFC Rebate Program</h3>
+<p>NV Energy offers commercial EV charging rebates: <strong>50% of project cost up to $400/kW or $40,000 per station, whichever is less, with a maximum of 5 stations per project.</strong><sup><a href="#ref-nve-rebate">6</a></sup> Per-station means per stall in our case. Eight stalls × $40,000 cap × 5 station maximum = <strong>$200,000 rebate ceiling</strong>. The remaining 3 stalls are not rebate-eligible. Apply through NV Energy's Custom Grant Program for a possible second-tier additional grant for projects beyond the standard rebate scope.</p>
+
+<!-- SECTION 06 -->
+<h2 id="solar-tech"><span class="num">06</span><span>Solar PV: Engineering &amp; Interconnection</span></h2>
+
+<p>The 250 kW solar PV array is sized to offset roughly 20-25% of annual station electricity, generates the 30% Solar ITC, and provides daytime peak-shaving (drives down our peak demand bill).</p>
+
+<h3>System architecture</h3>
+<ul class="checklist">
+  <li><b>250 kW DC capacity</b><small>Roughly 600-650 panels at 400-450W each, depending on selection. Mounted on a parking-canopy structure over the chargers (best Vegas insolation, also provides shade for waiting drivers — UX win).</small></li>
+  <li><b>Inverters</b><small>Either string inverters (cheaper) or microinverters (per-panel monitoring, easier maintenance). For a commercial canopy at this scale, central string inverters are typical.</small></li>
+  <li><b>DC-coupled or AC-coupled to charger?</b><small>For our setup, AC-coupled is standard: solar inverts to 480V AC, ties into the same switchgear feeding the chargers. Direct DC-coupling to the charger is technically possible but unusual.</small></li>
+  <li><b>Battery storage (optional)</b><small>Adding 100-200 kWh of battery storage would shift solar output to evening peaks and could earn an NV Energy demand-response payment. Costs another $80-150K. Not in current budget. Worth modeling separately.</small></li>
+</ul>
+
+<h3>NV Energy Solar Interconnection</h3>
+<p>NV Energy's net-metering successor program now uses <strong>15-minute interval netting</strong> in the northern territory and is moving in that direction in southern Nevada<sup><a href="#ref-nve-nem">7</a></sup>. Practical implication: <em>solar exported to the grid only offsets consumption within the same 15-minute window</em>. This is less generous than monthly netting, and it's why pairing solar with battery storage is increasingly the right answer.</p>
+
+<p>For our project, the simpler path is to <strong>not export to the grid at all</strong> — design the system as behind-the-meter, sized so PV output is fully consumed by the chargers during operating hours. This avoids net-metering paperwork entirely and the system functions as a load-reducer rather than a generator.</p>
+
+<h3>Solar permits and inspections</h3>
+<ul class="checklist">
+  <li><b>Solar building permit (Clark County)</b><small>Filed with the rest of the package. Includes structural calculations for the canopy, electrical single-line diagram, equipment cut sheets.</small></li>
+  <li><b>Solar electrical inspection</b><small>Before tying into the main switchgear. Same inspector schedule as charging station electrical.</small></li>
+  <li><b>NV Energy meter swap or new meter</b><small>For behind-the-meter solar, no meter change needed. For grid-export, NV Energy installs a bidirectional meter.</small></li>
+  <li><b>Production Activation</b><small>Once electrical passes and meter is set, the system is energized and starts producing.</small></li>
+</ul>
+
+<!-- SECTION 07 -->
+<h2 id="tax"><span class="num">07</span><span>Tax Credits &amp; Depreciation</span></h2>
+
+<p>This is where the largest portion of project economics live. <strong>Total Year 1 federal tax benefit: ~$425,000</strong> (depreciation deduction at 37% bracket + ITC). Get this wrong and the deal economics fall apart.</p>
+
+<h3>The Big Three (in order of value to us)</h3>
+
+<h4>1. 100% Bonus Depreciation — ~$387,000 Y1 tax savings at 37%</h4>
+<p>Under <strong>OBBBA (Pub. L. 119-21, July 2025)</strong>, 100% bonus depreciation is permanently restored for qualified property acquired and placed in service after January 19, 2025<sup><a href="#ref-obbba">8</a></sup>. The Tesla cabinets, posts, switchgear, and solar equipment all qualify. Annual cost recovery property class: 5-year for the EV chargers (MACRS class 57.0), 7-year for site improvements, 5-year for the solar PV. Since bonus is 100%, full deduction in Year 1.</p>
+
+<div class="costs">
+  <div class="costs-row"><span class="cost-lbl">Tesla hardware (cabinet + 8 V4 posts)<small>Per Tesla configurator. 5-yr property, 100% bonus.<sup><a href="#ref-electrek-config">12</a></sup></small></span><span class="cost-val">$500,000</span></div>
+  <div class="costs-row"><span class="cost-lbl">Installation (civil, electrical, transformer pad)<small>Tesla "Medium" tier estimate: $55K/post × 8. 15-yr property, 100% bonus.</small></span><span class="cost-val">$440,000</span></div>
+  <div class="costs-row"><span class="cost-lbl">Solar PV (basis-reduced after ITC)<small>5-yr property, 100% bonus</small></span><span class="cost-val">$106,250</span></div>
+  <div class="costs-row subtotal"><span class="cost-lbl">Total Y1 deduction</span><span class="cost-val">$1,046,250</span></div>
+  <div class="costs-row total"><span class="cost-lbl">Tax savings at 37% bracket</span><span class="cost-val income">$387,113</span></div>
+</div>
+
+<h4>2. Solar ITC (Section 48E) — $37,500</h4>
+<p>30% of qualified solar PV cost ($125,000 × 30% = $37,500). <strong>Critical good news for our project: the 250 kW system is well under the 1 MW threshold.</strong> Per IRS guidance, solar projects <strong>under 1 MW are exempt from prevailing wage and apprenticeship requirements</strong> and automatically qualify for the full 30% credit<sup><a href="#ref-seia-pwa">9</a></sup>. We capture the full ITC without prevailing-wage paperwork, complications, or audit risk.</p>
+
+<p>Per IRS §50(c), the solar property basis is reduced by 50% of the credit ($18,750), making the depreciable basis $106,250 instead of $125,000. Bonus depreciation applies to the reduced basis.</p>
+
+<div class="cal green">
+  <span class="cal-tag">Win</span>
+  <p>The "under 1 MW = no prevailing wage" exemption saves us roughly $30,000 in compliance costs and meaningfully reduces audit exposure on the ITC. <strong>Do not exceed 1 MW on the solar array.</strong> If we ever consider expanding to 500 kW or more, recheck this threshold.</p>
+</div>
+
+<h4>3. §30C Charger Credit — EXCLUDED</h4>
+<p>The Alternative Fuel Vehicle Refueling Property Credit (§30C) provides up to 30% credit on EV charging equipment. The Inflation Reduction Act extended it through 2032, but <strong>OBBBA sunsets §30C effective June 30, 2026</strong>. Our 16-week build, starting after lease signing in late 2026, cannot capture this credit. We've excluded $46,500 of potential credit value. <em>If we accelerate the lease and break ground before June 30, 2026, we recapture this — worth pursuing aggressively.</em></p>
+
+<h3>Construction-start deadline cliff</h3>
+<div class="cal">
+  <span class="cal-tag">Hard deadline</span>
+  <p>OBBBA sunsets the Section 48E Solar ITC for new construction starting <strong>after July 4, 2026</strong>, AND for any project not placed in service by <strong>December 31, 2027</strong><sup><a href="#ref-brightergy">10</a></sup>. To preserve the 30% ITC, we must <strong>begin construction</strong> (physical work of significant nature, OR 5% safe-harbor of total cost incurred) before July 4, 2026, and place the system in service before December 31, 2027. Both deadlines are achievable on our timeline but only with disciplined execution.</p>
+</div>
+
+<!-- SECTION 08 -->
+<h2 id="prevailing"><span class="num">08</span><span>Prevailing Wage / Apprenticeship</span></h2>
+
+<p>Most discussion of solar ITC prevailing wage and apprenticeship (PWA) requirements describes the rules for projects 1 MW and larger. <strong>For the Green Leaf project these rules do not apply</strong> because our 250 kW array is below the 1 MW threshold<sup><a href="#ref-seia-pwa">9</a></sup>. We claim the full 30% ITC without PWA documentation.</p>
+
+<h3>What we do anyway</h3>
+<p>Even though not required, document construction labor hours and contractor classifications. Two reasons:</p>
+<ul class="checklist">
+  <li><b>Audit defense</b><small>If the IRS ever challenges the ITC claim, having clean labor records pre-empts the conversation. Cheap insurance.</small></li>
+  <li><b>Possible SBA wage reporting</b><small>SBA 504 financing has Davis-Bacon implications when federal money is involved. The 504 program technically does not require Davis-Bacon (it does for 7(a) loans for federal construction), but documenting wages keeps options open.</small></li>
+</ul>
+
+<h3>If we ever expand to ≥1 MW</h3>
+<p>Future-proof: if the apartment community ever wants additional solar (say, rooftop solar across the apartment buildings) and total project capacity crosses 1 MW, PWA kicks in. Davis-Bacon prevailing wages from sam.gov apply for 5 years post-construction. Apprentices must perform 15% of construction hours. Good-faith effort exception available if no apprentices respond to RFPs.</p>
+
+<!-- SECTION 09 -->
+<h2 id="nepa"><span class="num">09</span><span>SBA Financing &amp; NEPA Trigger</span></h2>
+
+<p>Future Tech 9000 finances the project through a <strong>SBA 504 loan</strong>. SBA 504 is a long-term, fixed-rate loan for fixed assets (real estate and major equipment), typically 50% conventional bank lender + 40% SBA-debenture-funded CDC + 10% borrower equity.</p>
+
+<h3>NEPA implications</h3>
+<p>Federal financial assistance can trigger <strong>National Environmental Policy Act (NEPA)</strong> review. SBA 504 financing on real property typically requires either a <em>Categorical Exclusion (CatEx)</em> or an <em>Environmental Assessment (EA)</em>. For Phase I-clean, urban-infill, paved-parking-lot improvements, a CatEx is the routine outcome.</p>
+
+<h3>Phase I Environmental Site Assessment</h3>
+<p>Required as part of SBA 504 underwriting. ASTM E1527-21 standard. ~$3,500-$5,500. Looks for historical contamination, USTs, vapor encroachment. If clean, deal proceeds. If recognized environmental conditions (REC), Phase II soil and groundwater testing may be required ($10K-$50K). For a parking lot with no industrial history, we expect Phase I clean.</p>
+
+<h3>Other SBA 504 conditions</h3>
+<ul class="checklist">
+  <li><b>Personal guarantee</b><small>Owners with 20%+ stake in Future Tech 9000 personally guarantee the SBA portion.</small></li>
+  <li><b>Job creation requirement</b><small>SBA 504 typically requires creation of one job per $90K of SBA debenture (loosely enforced for green energy projects).</small></li>
+  <li><b>Minimum borrower equity 10%</b><small>For new businesses or special-use property, can rise to 15-20%.</small></li>
+  <li><b>Owner occupancy not required</b><small>Tenant operator is fine for our scenario.</small></li>
+  <li><b>20-year term</b><small>Matches our lease primary term. Critical alignment.</small></li>
+</ul>
+
+<!-- SECTION 10 -->
+<h2 id="insurance"><span class="num">10</span><span>Insurance Stack</span></h2>
+
+<p>Insurance carriers in 2026 increasingly view EV charging stations as a <strong>fire-risk loaded asset</strong>. Battery thermal events get headlines; carriers price the risk. Plan for ~$15K/year in premiums, not the $8K-$15K range cited in older industry guides.</p>
+
+<h3>Required policies</h3>
+
+<div class="costs">
+  <div class="costs-row"><span class="cost-lbl">Commercial General Liability (CGL)<small>$2M occurrence / $4M aggregate. Covers driver injuries, vehicle damage from cable trip-and-fall, equipment failure injuring third party.</small></span><span class="cost-val">$3K-$5K</span></div>
+  <div class="costs-row"><span class="cost-lbl">Property insurance<small>Full replacement value on $1.4M of charging + solar equipment. Fire, weather, vandalism, theft.</small></span><span class="cost-val">$5K-$8K</span></div>
+  <div class="costs-row"><span class="cost-lbl">Builder's risk (during construction only)<small>Drops off at substantial completion. Replaced by property insurance.</small></span><span class="cost-val">~$2K one-time</span></div>
+  <div class="costs-row"><span class="cost-lbl">Environmental liability<small>Battery electrolyte leak, transformer oil spill, soil contamination during construction.</small></span><span class="cost-val">$2K-$3K</span></div>
+  <div class="costs-row"><span class="cost-lbl">Cyber liability<small>Tesla data flow exposure. Customer payment data, charging session metadata.</small></span><span class="cost-val">$1K-$2K</span></div>
+  <div class="costs-row"><span class="cost-lbl">Business interruption<small>Lost revenue if station goes down 30+ days due to covered loss. Critical at $400K/yr revenue.</small></span><span class="cost-val">$1K-$2K</span></div>
+  <div class="costs-row total"><span class="cost-lbl">Annual total (post-construction)</span><span class="cost-val">$12K-$20K</span></div>
+</div>
+
+<h3>Conditions to negotiate with carrier</h3>
+<ul class="checklist">
+  <li><b>A-rated carrier minimum</b><small>AM Best A- or better. Not because Green Leaf demands it (they do) but because second-tier carriers exit the EV market in any softening.</small></li>
+  <li><b>Green Leaf as additional insured on CGL</b><small>Standard. They get notice of any cancellation.</small></li>
+  <li><b>30-day notice of cancellation</b><small>Standard.</small></li>
+  <li><b>Annual certificate of insurance to Green Leaf</b><small>Process item, not just at lease signing.</small></li>
+  <li><b>Per-occurrence vs annual aggregate</b><small>Get $2M per occurrence specifically. Some carriers try to consolidate to a single $4M aggregate that's effectively half-coverage.</small></li>
+</ul>
+
+<h3>What Green Leaf must do (in their lease obligations)</h3>
+<div class="cal blue">
+  <span class="cal-tag">Coordination item</span>
+  <p>Green Leaf must notify their property carrier of the EV charging station <strong>before construction begins, not at next renewal</strong>. Some property insurance carriers will treat unannounced EV chargers as a material change of risk and decline a future claim. Their annual renewal will likely have a 5-15% premium loading for the station.</p>
+</div>
+
+<!-- SECTION 11 -->
+<h2 id="tesla-vs"><span class="num">11</span><span>Tesla Provides vs Does Not — Definitive List</span></h2>
+
+<p>This list is the operational answer to "is X our problem?" Use it as a checklist when scoping any work order or contract.</p>
+
+<h3>TESLA PROVIDES (verified against Tesla.com program docs)</h3>
+<ul class="checklist">
+  <li><b>Hardware (V4 cabinet + 8 posts)</b><small>Per Tesla configurator: $500,000 fixed for 8-post V4 site. Cabinet + posts + signage. Hardware-only price; no installation included.</small></li>
+  <li><b>Approved engineering plans &amp; specs</b><small>Standardized site drawings we use as basis for our engineer's stamped permit drawings.</small></li>
+  <li><b>Project engineering support during installation</b><small>Tesla Design Engineer assigned post-purchase. Reviews and signs off on each phase.</small></li>
+  <li><b>Commissioning</b><small>Tesla activates the cabinets after our electrical and NV Energy energization. Pre-Assembled Supercharger Units (PSUs) can deploy in as few as 4 days from delivery to site opening.</small></li>
+  <li><b>Software, firmware, payment processing</b><small>Driver app, vehicle handshake, billing, OTA updates. Credit card processing fees covered by Tesla.</small></li>
+  <li><b>Pricing portal (host-set pricing)</b><small>We set our own retail price. Tesla's tools include congestion fees and TOU pricing.</small></li>
+  <li><b>In-vehicle navigation + Google Maps + 3D Site Maps</b><small>Our station appears across Tesla nav, Trip Planner, AND Google Maps. Pilot 3D maps show layout, nearby businesses, real-time stall availability.</small></li>
+  <li><b>97% uptime SLA &amp; remote monitoring</b><small>Network Operations Center 24/7/365. Remote detection, automatic triage, parts on hand, Tesla-employed technicians.</small></li>
+  <li><b>24/7 driver-facing customer support — all EVs</b><small>Tesla handles all driver issues, including non-Tesla EVs charging at our station.</small></li>
+  <li><b>Software updates &amp; pricing model adjustments</b><small>OTA throughout lease. Battery preconditioning. AC ripple current heating.</small></li>
+  <li><b>Replacement cabinets under warranty</b><small>Standard equipment warranty. Beyond warranty, parts at our cost.</small></li>
+</ul>
+
+<h3>TESLA DOES NOT PROVIDE</h3>
+<ul class="checklist">
+  <li><b>Initial site qualification due diligence</b><small><em>Nuance:</em> We propose the site, Tesla screens and approves/declines based on market expansion needs, route popularity, power availability, and traffic. Tesla doesn't do the title work, Phase I, or zoning analysis — that's all on us.</small></li>
+  <li><b>The lease with Green Leaf</b><small>That's our deal with the landowner. Tesla's own Supercharger Agreement template informs ours but is not used directly.</small></li>
+  <li><b>The SBA loan or any financing</b><small>We finance ourselves. The $500K hardware payment is upfront to Tesla.</small></li>
+  <li><b>Permits or zoning approvals</b><small>We pull all permits. Tesla's design engineer can't sign Nevada drawings.</small></li>
+  <li><b>NV Energy interconnection</b><small>We submit the application, pay the deposit, sign the agreement. Tesla helps with load calculations.</small></li>
+  <li><b>Civil work — transformer pad, primary conduit, grounding</b><small>Customer-side civil and electrical work is on us. ~$440K per Tesla's "Medium" install tier.</small></li>
+  <li><b>Trenching, conduit, or wire installation</b><small>Our electrical contractor. Tesla provides specifications, not labor.</small></li>
+  <li><b>Concrete pads (cabinet, post foundations)</b><small>Our civil contractor. Tesla provides pad specs and engineering drawings.</small></li>
+  <li><b>Lighting, fencing, landscaping, signage installation</b><small>Site improvements are ours. Tesla provides Tesla sign artwork; physical install is ours.</small></li>
+  <li><b>Insurance on the equipment after delivery</b><small><em>Nuance:</em> Tesla insures during transit and pre-commissioning. From the moment of commissioning forward, equipment property insurance is ours.</small></li>
+  <li><b>Property tax payments</b><small>Personal property tax on the equipment is ours, not Green Leaf's.</small></li>
+  <li><b>Day-to-day site cleanliness</b><small>Litter, lighting fixture bulbs, paint touch-up, parking line repainting.</small></li>
+  <li><b>The electrical bill</b><small>NV Energy bills Future Tech 9000 directly. <strong>This is the new program.</strong> The legacy "Host" program had Tesla paying — it's been replaced.</small></li>
+  <li><b>The Solar PV array</b><small>Tesla has nothing to do with our solar — separate contractor, separate equipment, separate ITC.</small></li>
+</ul>
+
+<!-- SECTION 12 -->
+<h2 id="timeline"><span class="num">12</span><span>Master Timeline &amp; Critical Path</span></h2>
+
+<p>The 16-week pre-construction phase is followed by 8-10 weeks of actual construction. Total: 24-26 weeks from lease signing to revenue. Critical path runs through three items: <strong>SNDA from Green Leaf's lender</strong>, <strong>NV Energy transformer delivery</strong>, and <strong>Clark County permits</strong>.</p>
+
+<div class="costs">
+  <div class="costs-row"><span class="cost-lbl"><b>Week 1-3 — Property &amp; Land-Use Due Diligence</b><small>Title report, zoning letter, parcel survey, restaurant parking schedule, Phase I ESA scope</small></span><span class="cost-val">PARALLEL</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 1 — Order transformer &amp; submit NV Energy service application</b><small>Long-lead deposit. 8-16 week wait. Critical path #1.</small></span><span class="cost-val">CRITICAL</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 3-8 — Lender Approval &amp; SNDA</b><small>Identify Green Leaf's lender. Send draft SNDA. 30-45 day turnaround. Cannot proceed without it.</small></span><span class="cost-val">CRITICAL</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 6-10 — Document Execution</b><small>Lease, Tesla operator agreement, SBA 504 financing, all signed concurrently.</small></span><span class="cost-val">CRITICAL</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 10-14 — Permits &amp; Insurance</b><small>Submit Clark County permit application, NV Energy DCFC rebate application, insurance binding, lease recorded.</small></span><span class="cost-val">21+ DAYS</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 14-16 — Pre-Construction Verification</b><small>All approvals confirmed in writing, contractor selected, payment schedule arranged with bank.</small></span><span class="cost-val">VERIFY</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 17-22 — Construction</b><small>Trenching, conduit, transformer pad, post foundations, switchgear, panel installation, solar canopy framing.</small></span><span class="cost-val">~6 WEEKS</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>Week 22-24 — Tesla Commissioning</b><small>Tesla cabinet delivery, post installation, electrical tie-in, software activation, drive-test.</small></span><span class="cost-val">~2 WEEKS</span></div>
+  <div class="costs-row total"><span class="cost-lbl"><b>Week 24-26 — Live</b><small>Station live in Tesla nav, first paying drivers.</small></span><span class="cost-val">REVENUE</span></div>
+</div>
+
+<h3>Three things that can blow the timeline</h3>
+<ol class="checklist">
+  <li><b>Lender refuses SNDA</b><small>If Green Leaf's lender's SNDA is not signed by Week 8, walk away. There is no Plan B for this clause.</small></li>
+  <li><b>NV Energy transformer delay beyond 16 weeks</b><small>Some transformers in 2026 are 20-26 week lead times. If we hear that estimate, accelerate Week 1 actions.</small></li>
+  <li><b>Clark County correction cycles</b><small>3+ correction cycles can push permits to Week 18+. Mitigation: hire a permit expediter, submit clean drawings.</small></li>
+</ol>
+
+<!-- SECTION 13 -->
+<h2 id="money"><span class="num">13</span><span>Money on the Table — Total Subsidy Stack</span></h2>
+
+<p>Sources of money beyond Future Tech 9000's equity and SBA 504 debt:</p>
+
+<div class="costs">
+  <div class="costs-row"><span class="cost-lbl"><b>NV Energy DCFC Rebate</b><small>50% of cost up to $400/kW or $40K per station, max 5 stations</small></span><span class="cost-val income">up to $200,000</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>NV Energy Custom Grant Program</b><small>Discretionary, case-by-case, for projects beyond standard rebate scope</small></span><span class="cost-val income">$25-100K</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>30% Solar ITC (Section 48E)</b><small>Direct tax credit on solar PV cost</small></span><span class="cost-val income">$37,500</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>100% Bonus Depreciation Y1 tax savings</b><small>$1.046M deduction × 37% bracket</small></span><span class="cost-val income">$387,113</span></div>
+  <div class="costs-row"><span class="cost-lbl"><b>§30C Charger Credit (if construction starts before 6/30/26)</b><small>Up to 30% on qualified charger property — only if we beat the OBBBA sunset</small></span><span class="cost-val income">$46,500*</span></div>
+  <div class="costs-row total"><span class="cost-lbl">Total stack vs $1,391,500 project cost</span><span class="cost-val income">~$696K-$770K</span></div>
+</div>
+
+<p style="font-size:13px;color:var(--muted)">*§30C contingent on construction start before 6/30/26. <strong>Effective net out-of-pocket Year 1 (after subsidies + tax savings, excluding §30C)</strong>: ~$760K. With §30C: ~$715K. The deal economics get materially better when the rebate stack is fully captured.</p>
+
+<div class="cal green">
+  <span class="cal-tag">Bottom line (v2.0 — Tesla audited)</span>
+  <p>Of the $1,391,500 project cost (Tesla configurator $940K + solar $125K + reserves &amp; soft costs $326K), roughly <strong>50% comes back as some combination of utility rebates, solar credits, and tax savings in Year 1.</strong> The deal isn't $1.4M of risk — it's about <strong>$700K of net first-year exposure</strong>. Tesla's audited program adds value v1.0 didn't credit: project engineer support, shipping, credit-card fee coverage, Google Maps integration. The $0.10/kWh fee is the trade-off for that operational stack.</p>
+</div>
+
+<div class="cal blue">
+  <span class="cal-tag">Tesla Configurator — Vegas Site Estimate</span>
+  <p>Applying Tesla's published methodology<sup><a href="#ref-electrek-config">12</a></sup> to 3463 Procyon St — Vegas falls between Tesla's Texas (302 kWh/post/day) and Florida (453 kWh/post/day) sample sites. <strong>Estimated baseline: ~320 kWh/post/day.</strong></p>
+  <p><strong>Year 1 modeled output</strong> @ $0.45/kWh retail, $0.108/kWh burdened electricity, 320 kWh/post/day:</p>
+  <ul style="margin:6px 0 8px 18px;color:var(--ink-soft);font-size:13px">
+    <li>Annual delivered energy: ~934,000 kWh</li>
+    <li>Annual revenue: ~$420,000</li>
+    <li>Tesla $0.10/kWh fee: ~$93,000</li>
+    <li>Electricity cost (burdened EVCCR-TOU): ~$119,000</li>
+    <li>Gross profit before fixed costs: ~$208,000</li>
+    <li>Estimated payback: ~5 years (matches Tesla's TX baseline; SF/FL would be 4 years, NYC 7 years)</li>
+  </ul>
+  <p><strong>Validation step before lease signing:</strong> run the actual Procyon St address through tesla.com/supercharger-for-business/get and capture Tesla's published estimate for our exact site. That number — produced by Tesla's own fleet data — is what an investor or lender will trust.</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer" id="references">
+  <h4>References &amp; Sources</h4>
+  <p id="ref-tesla-business">[1] Tesla Supercharger for Business program, launched September 2025 — host businesses purchase hardware (~$40K/stall V3, more for V4) and Tesla operates. Source: tesla.com/supercharger-for-business; Basenor analysis March 2026.</p>
+  <p id="ref-tesla-agmt">[2] Tesla Supercharger Agreement template (West Hollywood / Mammoth Lakes, public records). Trade Fixtures clause, self-operative SNDA, 24/7 operating rights.</p>
+  <p id="ref-cc-title30">[3] Clark County Title 30 Unified Development Code, EV Charging Requirements (adopted August 2023). Mandates EV-Capable conduit and electrical capacity in new commercial and multifamily construction.</p>
+  <p id="ref-permitplace">[4] Clark County Department of Building &amp; Fire Prevention. Standard commercial review 21 business days, 14 for minor commercial, 7 for qualifying expedited. Source: PermitPlace.com Las Vegas guide, March 2026.</p>
+  <p id="ref-nve-evccr">[5] NV Energy Schedule EVCCR-TOU (Electric Vehicle Commercial Charging Rider Time-of-Use). Approved by Public Utilities Commission of Nevada April 2019. 500-meter cap, 10-year transition through April 2029.</p>
+  <p id="ref-nve-rebate">[6] NV Energy Commercial EV Charging Station Rebate Program. 50% of project cost up to $400/kW or $40,000 per station, max 5 stations. Source: AFDC Law 12118 (Nevada).</p>
+  <p id="ref-nve-nem">[7] NV Energy net-metering rule changes, approved by Public Utilities Commission of Nevada September 2025. 15-minute interval netting in north, demand charge changes statewide. Source: Utility Dive coverage September 2025.</p>
+  <p id="ref-obbba">[8] One Big Beautiful Bill Act (OBBBA), Pub. L. 119-21, signed July 4, 2025. 100% bonus depreciation permanent for property placed in service after January 19, 2025.</p>
+  <p id="ref-seia-pwa">[9] SEIA Prevailing Wage and Apprenticeship Requirements summary. Final rules issued by Treasury June 25, 2024. Sub-1 MW exemption per Section 48 / 48E. Source: seia.org/prevailing-wage-apprenticeships.</p>
+  <p id="ref-brightergy">[10] OBBBA accelerated phase-out of Section 48E ITC: construction must begin before July 4, 2026, OR project must be placed in service before December 31, 2027. Source: Brightergy summary February 2026.</p>
+  <p id="ref-tesla-bus-prog">[11] Tesla Supercharger for Business program documentation, including 24/7/365 Network Operations Center, remote diagnostics, preventative maintenance, payment processing including CC fees, host pricing portal, congestion/TOU pricing tools, Trip Planner integration. Source: tesla.com/supercharger-for-business; EV Report comprehensive program breakdown March 2026; ChargingStations.com analysis March 2026.</p>
+  <p id="ref-electrek-config">[12] Tesla Supercharger for Business configurator pricing (April 2026): $500,000 hardware fixed for 8-post V4, Medium installation tier $55,000/post = $440,000, Total $940,000. Excludes capital costs, taxes, and host site improvements. Source: Electrek "Tesla's new Supercharger for Business tool reveals $940,000 all-in price" April 8 2026.</p>
+  <p style="margin-top:14px"><strong>This document is for internal Future Tech 9000 use and has been audited against Tesla.com program docs as of April 30, 2026.</strong> It is not legal, tax, or engineering advice. Hire licensed attorneys, CPAs, and engineers for all final scoping. Numbers and rules are accurate as of April 2026 and subject to change.</p>
+  <div class="contact">
+    Future Tech 9000, Inc<br>
+    Las Vegas, Nevada · futuretech9000.com<br>
+    Internal playbook · v2.0 · Tesla-audited · May 1, 2026
+  </div>
+</div>
+
+</div>
+
+<script>
+const root=document.documentElement;
+function applyTheme(t){
+  root.setAttribute('data-theme',t);
+  try{localStorage.setItem('ft_playbook_theme',t);}catch(e){}
+  document.getElementById('theme-btn').textContent=t==='dark'?'◑ Light':'◐ Dark';
+}
+function toggleTheme(){
+  applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+(function(){
+  let saved=null;try{saved=localStorage.getItem('ft_playbook_theme');}catch(e){}
+  if(saved){applyTheme(saved);}
+  else{
+    const dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(dark?'dark':'light');
+  }
+})();
+
+// Smooth scroll on TOC clicks
+document.querySelectorAll('.toc a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const id=a.getAttribute('href').slice(1);
+    const target=document.getElementById(id);
+    if(target){
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+});
+</script>
+
+</body>
+</html>
