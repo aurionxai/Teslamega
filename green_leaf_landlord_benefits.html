@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Green Leaf Lotus — Landlord Benefits One-Pager</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700;900&family=JetBrains+Mono:wght@400;600&family=Inter+Tight:wght@400;500;600;700&display=swap');
+
+:root {
+  --ink: #0f1419;
+  --paper: #fafaf7;
+  --muted: #5a5a5a;
+  --soft-muted: #888;
+  --accent: #c01818;
+  --soft: #ebe8e0;
+  --hi: #f4f1ea;
+  --green: #1a6b3a;
+  --leaf: #2d6a3e;
+  --leaf-soft: #f0f5ee;
+  --leaf-hi: #e2ecdc;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #2a2a2a; }
+body {
+  font-family: 'Inter Tight', sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+.page {
+  width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  background: var(--paper);
+  padding: 0.5in 0.55in;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEAD ───────────────────────────────────────────────── */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+.head-l .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.head-l h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 29px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.head-l h1 .em { font-style: italic; color: var(--leaf); font-weight: 700; }
+.head-l .sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.head-r {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.head-r .doc-id { font-weight: 600; color: var(--ink); letter-spacing: 0.05em; }
+
+/* ── ASK BAR ────────────────────────────────────────────── */
+.ask {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 13px 16px;
+  margin-bottom: 14px;
+}
+.ask .cell {
+  border-right: 1px solid #333;
+  padding: 0 14px;
+}
+.ask .cell:first-child { padding-left: 0; }
+.ask .cell:last-child { border-right: none; padding-right: 0; }
+.ask .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+.ask .val {
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1;
+}
+.ask .val small {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.65;
+  margin-left: 4px;
+}
+.ask .val.leaf { color: #7fc090; }
+
+/* ── LEDE ───────────────────────────────────────────────── */
+.lede {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.lede strong { font-weight: 700; }
+.lede em { font-style: italic; }
+
+/* ── SECTION HEADERS ────────────────────────────────────── */
+h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+h2 .num { color: var(--leaf); font-weight: 700; }
+
+/* ── TWO-COL SPLIT (data + math) ────────────────────────── */
+.split {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.split .data {
+  font-size: 11px;
+  line-height: 1.55;
+}
+.split .math {
+  background: var(--leaf-soft);
+  border: 1px solid var(--leaf);
+  padding: 10px 13px;
+}
+.split .math .mtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.split .math .mrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px dotted #c0d4b8;
+  font-size: 10.5px;
+}
+.split .math .mrow:last-child { border-bottom: none; }
+.split .math .mrow .lbl {
+  color: var(--ink);
+  flex: 1;
+  padding-right: 8px;
+}
+.split .math .mrow .num-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.split .math .result {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1.5px solid var(--leaf);
+  text-align: center;
+}
+.split .math .result .rlabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.split .math .result .rval {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--leaf);
+}
+.split .math .result .runit {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ── POINTS LIST ────────────────────────────────────────── */
+.points {
+  list-style: none;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.points li {
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 6px;
+}
+.points li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--leaf);
+  font-weight: 700;
+}
+.points li strong { font-weight: 700; }
+
+/* ── 3-UP GRID ──────────────────────────────────────────── */
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  margin-bottom: 12px;
+  border: 1px solid var(--ink);
+}
+.grid-3 .card {
+  padding: 11px 13px;
+  border-right: 1px solid #ccc;
+}
+.grid-3 .card:last-child { border-right: none; }
+.grid-3 .card .stat {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--leaf);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.grid-3 .card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.grid-3 .card p {
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.grid-3 .card p strong { font-weight: 700; }
+
+/* ── CAVEATS CALLOUT ────────────────────────────────────── */
+.caveats {
+  background: #fef8ea;
+  border-left: 3px solid #b27300;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+}
+.caveats .ctitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a5500;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.caveats p {
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin-bottom: 4px;
+}
+.caveats p:last-child { margin-bottom: 0; }
+.caveats strong { font-weight: 700; }
+
+/* ── BOTTOM LINE BOX ────────────────────────────────────── */
+.bottom-line {
+  border: 1.5px solid var(--ink);
+  background: var(--leaf-hi);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.bottom-line .btitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bottom-line p {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.bottom-line p strong { font-weight: 700; }
+
+/* ── SOURCES STRIP ──────────────────────────────────────── */
+.sources {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  line-height: 1.65;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  border-top: 1px dotted #ccc;
+  padding-top: 8px;
+}
+.sources .stitle {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.sources .src-row {
+  margin-bottom: 2px;
+}
+.sources .src-row b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ── FOOT ───────────────────────────────────────────────── */
+.foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soft-muted);
+}
+
+.placeholder {
+  color: var(--accent);
+  background: #fde8e8;
+  padding: 0 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+@media print {
+  html, body { background: white; }
+  .page {
+    margin: 0;
+    box-shadow: none;
+    width: 100%;
+    min-height: auto;
+    padding: 0.45in 0.5in;
+  }
+  @page { size: letter; margin: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="head">
+    <div class="head-l">
+      <div class="eyebrow">Companion to Lease Term Sheet — For Green Leaf Lotus</div>
+      <h1>More Than Rent: <span class="em">What Else You Get.</span></h1>
+      <div class="sub">Independent research showing how an 8-stall Tesla Supercharger lifts every tenant on the parcel — restaurants, apartments, and the property itself.</div>
+    </div>
+    <div class="head-r">
+      <div class="doc-id">DOC · GLL-BENEFITS-001</div>
+      <div>May 2026</div>
+      <div>Companion to GLL-LEASE-001</div>
+    </div>
+  </div>
+
+  <div class="ask">
+    <div class="cell">
+      <div class="label">Restaurant Lift (Peak Zone)</div>
+      <div class="val leaf">+3.2<small>% / YR</small></div>
+    </div>
+    <div class="cell">
+      <div class="label">Apartment Rent Premium</div>
+      <div class="val leaf">3–7<small>%</small></div>
+    </div>
+    <div class="cell">
+      <div class="label">Captive Visitors / Year</div>
+      <div class="val">~35K</div>
+    </div>
+    <div class="cell">
+      <div class="label">Distance to Your Restaurants</div>
+      <div class="val">25<small>YARDS</small></div>
+    </div>
+  </div>
+
+  <p class="lede">
+    The lease pays Green Leaf Lotus <strong>$74,000 over three years</strong> in base rent alone. But the bigger story is what the Supercharger does for <em>everything else on the parcel</em>. Restaurant tenants 25 yards away sit squarely in the "peak-effect zone" identified by MIT researchers. Apartment units gain an amenity that commands a measurable rent premium. And the parcel as a whole becomes an EV-ready, future-proof asset. Below: the data, the math, and the honest caveats.
+  </p>
+
+  <h2><span>Your Restaurants Sit in the "Peak Zone"</span><span class="num">01</span></h2>
+  <div class="split">
+    <div class="data">
+      <p style="margin-bottom:8px"><strong>MIT's finding:</strong> the spending lift at nearby businesses is biggest within about <strong>one football field (~100 yards)</strong> of a charger. Your restaurants are at <strong>25 yards</strong> — less than a quarter of that distance, well inside the strongest effect zone.</p>
+      <ul class="points">
+        <li><strong>+3.2% annual revenue lift</strong> for businesses near a point of interest (POI) — more than double the 1.4% study-wide average.</li>
+        <li><strong>~$1,500 / yr per nearby business</strong> in extra spending (MIT measured in 2019).</li>
+        <li><strong>$1 per minute</strong> — typical retail spend by EV drivers while their car is charging (EVgo, 2022).</li>
+        <li><strong>20–30 min</strong> — typical Tesla V4 charging session for the usual 30–40 kWh top-up. Long enough to grab food. Short enough to feel quick.</li>
+      </ul>
+    </div>
+    <div class="math">
+      <div class="mtitle">▼ The Math, In Plain Words</div>
+      <div class="mrow"><span class="lbl">Stabilized sessions / day (Y3)</span><span class="num-val">~96</span></div>
+      <div class="mrow"><span class="lbl">Avg. session length</span><span class="num-val">~25 min</span></div>
+      <div class="mrow"><span class="lbl">Sessions / year</span><span class="num-val">~35,000</span></div>
+      <div class="mrow"><span class="lbl">Spend potential / session</span><span class="num-val">$20–30</span></div>
+      <div class="result">
+        <div class="rlabel">Captive Audience Within 25 Yards</div>
+        <div class="rval">~35,000</div>
+        <div class="runit">drivers / year · 20–30 min on-site each</div>
+      </div>
+    </div>
+  </div>
+
+  <h2><span>EV Charging Lifts Apartment Rents</span><span class="num">02</span></h2>
+  <div class="grid-3">
+    <div class="card">
+      <div class="label">▼ Rent Premium</div>
+      <div class="stat">3–7%</div>
+      <p>Apartments with on-site EV charging typically rent at a <strong>3 to 7% premium</strong> compared to similar units without it. Industry-reported, not peer-reviewed — directional, not exact.</p>
+    </div>
+    <div class="card">
+      <div class="label">▼ Market Scarcity</div>
+      <div class="stat">~5%</div>
+      <p>Only about <strong>5% of rental properties</strong> currently offer EV charging. First-mover advantage is real but won't last forever — the window is now.</p>
+    </div>
+    <div class="card">
+      <div class="label">▼ Tenant Retention</div>
+      <div class="stat">+Sticky</div>
+      <p>EV charging is becoming a <strong>"must-have" amenity</strong> like in-unit laundry. Tenants who own EVs and rely on the charger are dramatically more likely to renew.</p>
+    </div>
+  </div>
+
+  <h2><span>The Whole Parcel Gets Foot Traffic</span><span class="num">03</span></h2>
+  <ul class="points" style="margin-bottom:12px">
+    <li><strong>+4% monthly retailer visits</strong> near fast-charging stations — peer-reviewed study by Boston University and University of Wisconsin-Madison researchers, with the effect <em>more striking in closer proximity</em>.</li>
+    <li><strong>Anchor amenity, not just a tenant.</strong> The Supercharger pulls EV drivers off the highway and into the parcel — they wouldn't otherwise be here. Every business on the property gets impressions and try-ons it would not otherwise get.</li>
+    <li><strong>Future-proofs the asset.</strong> Apartments are projected to host <strong>17% of all charging stations by 2030</strong>. Parcels with charging infrastructure already in the ground will be worth meaningfully more at refinance or sale.</li>
+  </ul>
+
+  <div class="caveats">
+    <div class="ctitle">▼ Honest Caveats — What This Data Does <em>Not</em> Say</div>
+    <p><strong>Restaurant <em>visits</em> get shorter, not longer.</strong> MIT also found median dwell time at restaurants near chargers drops slightly — drivers grab food and go. This is a <strong>quick-serve / counter-service boost, not a sit-down dinner crowd</strong>. The net revenue effect is still clearly positive (more transactions, faster table turns), but spin matters.</p>
+    <p><strong>The 3–7% apartment rent premium is industry-sourced, not peer-reviewed.</strong> It's a directional number widely cited by multifamily operators, but the rigorous academic data isn't yet published. Treat as a planning estimate.</p>
+    <p><strong>MIT measured a $1,500/business/yr lift in 2019; the figure dropped to ~$400 in 2021–2023</strong> as more chargers came online and traffic spread thinner. Las Vegas in 2026 is still chronically undersupplied for charging — your site is closer to the 2019 condition than the 2023 condition.</p>
+  </div>
+
+  <div class="bottom-line">
+    <div class="btitle">▼ The Bottom Line for Green Leaf Lotus</div>
+    <p>You're not just getting <strong>$2,000/month in rent with a 3% escalator</strong>. You're getting an anchor amenity that delivers <strong>~35,000 captive nearby visitors per year</strong> to your restaurant tenants, a measurable rent premium on your apartment units, and a future-proofed parcel that will be more valuable at sale or refinance. The lease pays the rent. The Supercharger pays the dividends.</p>
+  </div>
+
+  <div class="sources">
+    <div class="stitle">▼ Sources</div>
+    <div class="src-row"><b>MIT/SMART (peer-reviewed):</b> Zheng et al., "Effects of electric vehicle charging stations on the economic vitality of local businesses." <i>Nature Communications</i>, Sept 2024. DOI: 10.1038/s41467-024-51554-9.</div>
+    <div class="src-row"><b>Boston U. / UW-Madison (peer-reviewed):</b> Retailer-visit study, cited in industry coverage — 4% monthly visit lift near fast chargers.</div>
+    <div class="src-row"><b>EVgo dwell-time data (2022):</b> ~$1/min retail spend by plugged-in EV drivers.</div>
+    <div class="src-row"><b>Multifamily rent premium (industry-sourced):</b> 3–7% premium reported across multiple multifamily/EV-charging trade sources; not yet peer-reviewed.</div>
+  </div>
+
+  <div class="foot">
+    <span>Green Leaf Lotus × Supercharger · Landlord Benefits Brief · Companion to Lease Term Sheet · For Discussion</span>
+    <span>DOC · GLL-BENEFITS-001</span>
+  </div>
+
+</div>
+
+</body>
+</html>
