@@ -115,6 +115,9 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 }
 .rent-piece.guaranteed{border-color:var(--green);background:var(--green-tint)}
 .rent-piece.kicker{border-color:var(--gold);background:var(--gold-tint)}
+.rent-piece.rent-solo{margin-bottom:18px;padding:18px 20px}
+.rent-piece.rent-solo .rent-amt{font-size:36px;margin-bottom:8px}
+.rent-piece.rent-solo .rent-desc{font-size:14px}
 .rent-tag{
   font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.4px;
   text-transform:uppercase;font-weight:700;margin-bottom:6px;display:block;
@@ -156,9 +159,17 @@ h1 em{font-style:italic;font-weight:400;color:var(--accent)}
 }
 .qrow:last-child{border-bottom:none}
 .qrow.total{background:var(--accent-tint);font-weight:700;border-top:2px solid var(--accent)}
+.qrow.total-soft{background:var(--paper-3);font-weight:600;border-top:1px dotted var(--rule-soft);color:var(--ink-soft);font-style:italic}
 .qrow div:not(:first-child){text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700}
 .qrow .pos{color:var(--green)}
 .qrow .neg{color:var(--accent)}
+
+/* RENT SCHEDULE — 6-column variant (label + 5 years) */
+.qtable.rent .qhead,
+.qtable.rent .qrow{grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr}
+.qtable.rent .qrow.total > div:nth-child(2){
+  text-align:center;font-size:15px;
+}
 
 /* SECTIONS */
 h2{
@@ -214,16 +225,6 @@ h2 .num{
   body{background:white}
   .shell{max-width:7.5in;padding:0.4in}
 }
-
-.qt{display:inline-flex;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;border-bottom:1px dotted var(--accent)}
-.qm{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--accent-tint);color:var(--accent);font-size:9px;line-height:1;margin-left:5px;font-weight:700;transition:.15s;border:1px solid var(--accent)}
-.qt:hover .qm{background:var(--accent);color:var(--paper)}
-.qd{display:none;margin:8px 0 4px;padding:11px 13px;background:var(--paper-2);border-left:3px solid var(--accent);font-size:12.5px;line-height:1.6;color:var(--ink-soft)}
-.qd.open{display:block;animation:qfade .2s ease}
-.qd b{color:var(--ink);font-weight:700}
-.qd em{color:var(--accent);font-style:italic}
-.qd strong{color:var(--accent);font-weight:700}
-@keyframes qfade{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -235,11 +236,11 @@ h2 .num{
 <header class="head">
   <div class="eyebrow">ONE-PAGE DEAL SUMMARY · GREEN LEAF LOTUS</div>
   <h1>Tesla Charging<br><em>at 3463 Procyon St</em></h1>
-  <p class="lede">8 Tesla V4 superchargers + solar. Future Tech 9000 funds and operates everything. Green Leaf gets a guaranteed monthly check plus a quarterly profit bonus — for 20 years.</p>
+  <p class="lede">8 Tesla V4 superchargers + solar. Future Tech 9000 funds and operates everything. Green Leaf gets a guaranteed monthly check that grows 3% every year — for <strong>10 years guaranteed, up to 20 years</strong> with renewal options. <strong>Predictable income. Zero capital. Zero work.</strong></p>
   <div class="meta">
     <span><b>FROM</b> Future Tech 9000, Inc</span>
     <span><b>TO</b> Green Leaf Partners</span>
-    <span><b>v2.1 · APR 2026</b></span>
+    <span><b>v2.7 · MAY 2026</b></span>
   </div>
 </header>
 
@@ -248,133 +249,104 @@ h2 .num{
   <div class="deal-head">⚡ The Deal in One Page</div>
   <div class="deal-body">
 
-    <div class="rent-pieces">
-      <div class="rent-piece guaranteed">
-        <span class="rent-tag">✓ Guaranteed Floor</span>
-        <div class="rent-amt">$2,000<small>/month</small></div>
-        <div class="rent-desc">Paid every month, automatic. <strong>$24,000 every year, no matter what.</strong> Even if the station has a slow start.</div>
-      </div>
-      <div class="rent-piece kicker">
-        <span class="rent-tag qt" onclick="qt(event,'kicker')">+ Quarterly Bonus<span class="qm">?</span></span>
-        <div class="rent-amt">5%<small>of profit</small></div>
-        <div class="rent-desc">Each quarter Future Tech 9000 turns a profit, you get 5% on top. Calculated and paid <strong>every 3 months</strong>.</div>
-      </div>
+    <div class="rent-piece guaranteed rent-solo">
+      <span class="rent-tag">✓ Guaranteed Rent · No Variables</span>
+      <div class="rent-amt">$2,000<small>/month</small></div>
+      <div class="rent-desc">Paid every month, automatic. <strong>$24,000 in Year 1</strong> — and the rent goes up <strong>3% every year</strong>, like an inflation-protected income stream. The 3% increase continues uninterrupted through both renewal options. <strong>Independent of how the station performs</strong> — no profit share, no profit risk, no surprises.</div>
     </div>
 
-    <div class="deal-line"><span class="deal-lbl">What we build</span><span class="deal-val"><span class="qt" onclick="qt(event,'v4')">8 Tesla V4 stalls<span class="qm">?</span></span> + <span class="qt" onclick="qt(event,'solar')">250 kW solar<span class="qm">?</span></span></span></div>
+    <div class="deal-line"><span class="deal-lbl">What we build</span><span class="deal-val">8 Tesla V4 stalls + 250 kW solar</span></div>
     <div class="deal-line"><span class="deal-lbl">What it costs you</span><span class="deal-val">$0</span></div>
-    <div class="deal-line"><span class="deal-lbl">What it costs us</span><span class="deal-val">$1,391,500</span></div>
-    <div class="deal-line"><span class="deal-lbl">Lease length</span><span class="deal-val">20 years + two 5-yr extensions</span></div>
-    <div class="deal-line"><span class="deal-lbl">Construction time</span><span class="deal-val">16 weeks (after lease signing)</span></div>
-    <div class="deal-line"><span class="deal-lbl">Restaurant parking</span><span class="deal-val">Reserved Thu–Sun (in lease)</span></div>
+    <div class="deal-line"><span class="deal-lbl">Lease length</span><span class="deal-val">10 yrs + two 5-yr options</span></div>
+    <div class="deal-line"><span class="deal-lbl">Parking</span><span class="deal-val">Walk-through with you to map locations</span></div>
   </div>
 </div>
 
-<!-- HOW IT WORKS QUARTERLY -->
-<h2><span class="num">01</span><span>Example Quarter</span></h2>
-<p class="sec-text">At a typical driver price of $0.40/kWh, here's what one quarter looks like (months 1, 4, 7, or 10 of any year). Volume is reduced 7.1% to account for restaurant parking overlap.</p>
+<!-- BASE RENT GROWTH OVER 20 YEARS -->
+<h2><span class="num">01</span><span>Your Rent Schedule</span></h2>
+<p class="sec-text">$2,000/month is the <strong>starting</strong> rent. Every year on the lease anniversary, it goes up 3% — built into the contract, automatic, no renegotiation. The first <strong>10 years are guaranteed</strong>. After that, Future Tech 9000 has two 5-year renewal options. If they renew, the 3% escalator keeps going uninterrupted.</p>
 
-<div class="qtable">
+<div class="qtable rent">
   <div class="qhead">
-    <div>Quarterly P&amp;L</div>
-    <div>Q1</div>
-    <div>Q2</div>
-    <div>Q3</div>
+    <div>Rent Schedule</div>
+    <div>Year 1</div>
+    <div>Year 5</div>
+    <div>Year 10</div>
+    <div>Year 15<sup>*</sup></div>
+    <div>Year 20<sup>*</sup></div>
   </div>
   <div class="qrow">
-    <div>Charging revenue</div>
-    <div class="pos">$96,639</div>
-    <div class="pos">$108,719</div>
-    <div class="pos">$120,799</div>
+    <div>Monthly rent</div>
+    <div>$2,000</div>
+    <div>$2,251</div>
+    <div>$2,610</div>
+    <div>$3,025</div>
+    <div class="pos">$3,507</div>
   </div>
   <div class="qrow">
-    <div>All operating costs (incl. base rent to you)</div>
-    <div class="neg">$90,490</div>
-    <div class="neg">$90,490</div>
-    <div class="neg">$90,490</div>
-  </div>
-  <div class="qrow">
-    <div>Future Tech profit before bonus</div>
-    <div>$6,149</div>
-    <div>$18,229</div>
-    <div>$30,309</div>
-  </div>
-  <div class="qrow">
-    <div>Your 5% bonus</div>
-    <div class="pos">$307</div>
-    <div class="pos">$911</div>
-    <div class="pos">$1,515</div>
+    <div>That year's total</div>
+    <div>$24,000</div>
+    <div>$27,012</div>
+    <div>$31,315</div>
+    <div>$36,302</div>
+    <div class="pos">$42,084</div>
   </div>
   <div class="qrow total">
-    <div>Your total this quarter (base + bonus)</div>
-    <div>$6,307</div>
-    <div>$6,911</div>
-    <div>$7,515</div>
+    <div>Guaranteed total (10-year initial term)</div>
+    <div style="grid-column:2/-1">$275,133</div>
+  </div>
+  <div class="qrow total-soft">
+    <div>If 1st option exercised (15 years total)</div>
+    <div style="grid-column:2/-1">$446,374</div>
+  </div>
+  <div class="qrow total-soft">
+    <div>If both options exercised (20 years total)</div>
+    <div style="grid-column:2/-1">$644,889</div>
   </div>
 </div>
 
-<p class="sec-text" style="font-size:13px;margin-top:-4px"><strong>Worth knowing:</strong> if a quarter is slow and Future Tech runs negative, you still get the $6,000 base — no bonus that quarter, but you never miss a check. <strong>The bonus only kicks in once we're profitable.</strong></p>
+<p class="sec-text" style="font-size:12px;margin-top:-4px;color:var(--muted)"><sup>*</sup>Year 15 and Year 20 rents are contingent on Future Tech 9000 exercising its 5-year renewal options. The 3% annual escalator continues uninterrupted into any renewal period.</p>
 
-<!-- WHY THIS SITE -->
-<h2><span class="num">02</span><span>Why This Vegas Location Works</span></h2>
-
-<div class="why-grid">
-  <div class="why">
-    <b>Tesla Gap</b>
-    Closest Tesla Supercharger is 1.9 miles away. Site sits in a verified hole on the I-15 / Strip approach corridor.
-  </div>
-  <div class="why">
-    <b>NV Charging Demand</b>
-    Nevada is in the top 5 states for EV adoption — 3.8% of registered vehicles. Vegas tourism doubles that demand on weekends.
-  </div>
-  <div class="why">
-    <b>NV Energy Rate</b>
-    Nevada has the cheapest commercial EV electricity rate in the West ($0.074/kWh on the EVCCR-TOU schedule). Strong margins.
-  </div>
-  <div class="why">
-    <b>Cybercab Ready</b>
-    Tesla's 2026 <span class="qt" onclick="qt(event,'cybercab')">robotaxi (Cybercab)<span class="qm">?</span></span> rollout starts in Vegas. This site is positioned to host fleet recharging too.
-  </div>
-</div>
+<p class="sec-text" style="font-size:13px;margin-top:-4px"><strong>Compare:</strong> If the rent stayed flat at $2,000 for the 10-year guaranteed term, you'd collect $240,000. With the 3% yearly increase, you collect <strong>$275,133 — about $35,000 more</strong> over the guaranteed period. If Future Tech exercises both renewal options, the total reaches <strong>$644,889</strong> over 20 years. Inflation works for you, not against you.</p>
 
 <!-- THE PROCESS -->
-<h2><span class="num">03</span><span>What Happens Next</span></h2>
-<p class="sec-text">A 16-week, 5-step process to make sure everything's right before we dig.</p>
+<h2><span class="num">02</span><span>What Happens Next</span></h2>
+<p class="sec-text">A 6-step process to make sure everything's right before construction begins.</p>
 
 <div class="process">
-  <div class="proc-row"><span class="proc-num">01</span><span>Property &amp; loan checks (title, zoning, your bank's name)</span><span class="proc-week">Wk 1–3</span></div>
-  <div class="proc-row"><span class="proc-num">02</span><span>Get your lender's approval &amp; SNDA signature</span><span class="proc-week">Wk 3–8</span></div>
-  <div class="proc-row"><span class="proc-num">03</span><span>Sign lease, Tesla operator agreement, SBA loan</span><span class="proc-week">Wk 6–10</span></div>
-  <div class="proc-row"><span class="proc-num">04</span><span>City permits, NV Energy power upgrade order, insurance</span><span class="proc-week">Wk 10–14</span></div>
-  <div class="proc-row"><span class="proc-num">05</span><span>Final pre-construction checks &amp; signoffs</span><span class="proc-week">Wk 14–16</span></div>
+  <div class="proc-row"><span class="proc-num">01</span><span>Walk the property together — map charger locations &amp; parking layout, discuss restaurant accommodation</span><span class="proc-week">Step 1</span></div>
+  <div class="proc-row"><span class="proc-num">02</span><span>Property &amp; loan checks (title, zoning, your bank's name)</span><span class="proc-week">Step 2</span></div>
+  <div class="proc-row"><span class="proc-num">03</span><span>Get your lender's approval &amp; SNDA signature</span><span class="proc-week">Step 3</span></div>
+  <div class="proc-row"><span class="proc-num">04</span><span>Sign lease &amp; Tesla operator agreement</span><span class="proc-week">Step 4</span></div>
+  <div class="proc-row"><span class="proc-num">05</span><span>City permits, NV Energy power upgrade order, insurance</span><span class="proc-week">Step 5</span></div>
+  <div class="proc-row"><span class="proc-num">06</span><span>Final pre-construction checks &amp; signoffs</span><span class="proc-week">Step 6</span></div>
 </div>
 
-<!-- THE 4 NON-NEGOTIABLES -->
-<h2><span class="num">04</span><span>What the Lease Has to Have</span></h2>
-<p class="sec-text">Long deals need clear rules. These 4 lease terms are non-negotiable; if any are missing, neither side should sign.</p>
+<!-- LEASE PROTECTIONS -->
+<h2><span class="num">03</span><span>Lease Protections for Both Sides</span></h2>
+<p class="sec-text">Long deals need clear rules. These 4 lease terms protect both parties; if any are missing, neither side should sign.</p>
 
 <div class="why-grid">
   <div class="why" style="border-left-color:var(--accent)">
-    <b><span class="qt" onclick="qt(event,'snda')">1. SNDA from your lender<span class="qm">?</span></span></b>
-    Three-way promise that protects the deal if anything ever happens to your mortgage. Without it, we walk.
+    <b>1. SNDA from your lender</b>
+    Three-way promise signed by you, your lender, and Future Tech. If anything ever happens to your mortgage, the lease still stands — protects your rent stream from forced termination, protects our equipment investment.
   </div>
   <div class="why" style="border-left-color:var(--accent)">
     <b>2. Equipment ownership clarity</b>
-    The chargers belong to Future Tech 9000, recorded with the state. Not real estate.
+    The chargers are filed with the state as Future Tech 9000 property. Keeps them off your real estate tax assessment and out of your mortgage collateral — and clearly identifies who owns and maintains what.
   </div>
   <div class="why" style="border-left-color:var(--accent)">
     <b>3. Lease recorded at the county</b>
-    A short summary filed at Clark County. Public proof of our rights. $45 fee.
+    A short summary filed at Clark County. Public proof of the lease terms for both parties, in case either side ever sells or refinances. $45 fee.
   </div>
   <div class="why" style="border-left-color:var(--accent)">
-    <b><span class="qt" onclick="qt(event,'cure')">4. Cure rights<span class="qm">?</span></span></b>
-    If either side messes up, the other gets notice and a chance to fix it. 30 days for money, 60+ for other.
+    <b>4. Cure rights</b>
+    If either side messes up, the other gets written notice and a chance to fix it before the lease can be terminated. 30 days for money issues, 60+ for everything else. Equal for both parties.
   </div>
 </div>
 
 <div class="fine">
-  <strong>Sources &amp; assumptions:</strong> Volume reduced 7.1% for restaurant parking overlap. Operating costs include <span class="qt" onclick="qt(event,'ev_rate')">NV Energy EVCCR-TOU rate ($0.074/kWh)<span class="qm">?</span></span>, Tesla network fee (10% of revenue), <span class="qt" onclick="qt(event,'sba504')">SBA 504 financing (~6.5%, 20-year)<span class="qm">?</span></span>, $40K annual insurance + O&amp;M + admin, and your $24K base rent. Driver price varies — model uses $0.40, $0.45, $0.50/kWh as Q1/Q2/Q3 illustration. Real performance will vary by season and ramp-up.<br><br>
-  <strong>Tax notes for your CPA:</strong> <span class="qt" onclick="qt(event,'bonus_dep')">100% bonus depreciation (OBBBA, P.L. 119-21)<span class="qm">?</span></span> on chargers, sitework, and solar — Y1 deduction ~$1.04M for Future Tech 9000. <span class="qt" onclick="qt(event,'itc')">30% Solar ITC ($37,500)<span class="qm">?</span></span>. <span class="qt" onclick="qt(event,'sec30c')">§30C charger credit excluded<span class="qm">?</span></span> — sunsets 6/30/2026.<br><br>
+  <strong>Lease terms summary:</strong> 10-year initial term, plus two tenant-elected 5-year renewal options (maximum total: 20 years). Base rent starts at $2,000/month in Year 1 and increases 3% annually on each lease anniversary (compound). The 3% escalator continues uninterrupted into any renewal period. Guaranteed rent over the 10-year initial term: $275,133. Maximum rent if both renewal options are exercised: $644,889. Payment is guaranteed by lease — not contingent on station performance, charging volume, or Future Tech 9000's financial results. Parking layout and any restaurant tenant accommodation to be agreed during the property walk-through and finalized in the lease.<br><br>
   This is a deal proposal, not legal or tax advice. Both parties should hire their own attorney and CPA before signing. Final terms subject to negotiation.
 </div>
 
@@ -387,30 +359,6 @@ h2 .num{
 </div>
 
 <script>
-const QDEFS={"dcfc": "<b>DC Fast Charger.</b> High-power public chargers (50 kW and up) that fill an EV in 20\u201345 minutes. The opposite is Level 2, the slow chargers at home or at offices. Tesla Superchargers are DCFC. The deal at Green Leaf is DCFC. We don't care about Level 2 \u2014 that's not a real business.", "tesla_sc": "<b>Tesla Supercharger.</b> Tesla's own DC fast charger brand. The largest DCFC network in the US \u2014 about 53% of all DC fast ports. Since 2024, non-Tesla EVs can also charge at Superchargers using an NACS adapter, so Ford, GM, Rivian and others are customers too.", "chargepoint": "<b>ChargePoint.</b> The biggest charging network in the US by total locations, but most of those are slow Level 2 chargers. Their DC fast network is much smaller than Tesla's. They sell hardware and run software for many third-party site hosts (hotels, gas stations, etc.).", "ea": "<b>Electrify America.</b> The second-largest DC fast network. Owned by Volkswagen \u2014 created as part of VW's 2016 diesel emissions settlement. Strong on highway corridors and in California.", "evgo": "<b>EVgo.</b> A pure-play DC fast charging operator. Has a partnership with GM to expand sites. Smaller network than Tesla or EA but well-distributed.", "shell": "<b>Shell Recharge.</b> Shell's EV charging business \u2014 they're trying to convert gas stations into multi-fuel stops. Small network in the US so far.", "dealer": "<b>Dealer / Other.</b> Auto dealerships and other small site hosts that have one or two DC fast chargers, mostly for their own service customers. Technically public but rarely used by general drivers \u2014 they're hard to find, often blocked by service vehicles, and inconvenient. Not real competition.", "rings": "<b>Distance rings.</b> The dashed circles around Green Leaf show 1, 3, and 5 mile distances. A driver looking for a charger usually takes the closest convenient one \u2014 every charger inside the 5-mile ring competes for the same drivers.", "gap": "<b>Charging hole.</b> A geographic area where EV adoption has outpaced public charging supply. Drivers in a charging hole have to drive farther, wait longer, or skip charging. New stations in a charging hole fill up immediately. Procyon St is in a hole on the I-15 / Strip approach.", "v4": "<b>Tesla V4 charger.</b> Tesla's newest Supercharger hardware (rolled out 2023+). Up to 325 kW per stall \u2014 fills most cars to 80% in 20 minutes. V4 is also the first Tesla cabinet that natively supports CCS connectors, meaning every car can charge there, not just Teslas.", "solar": "<b>250 kW solar PV.</b> A solar panel array sized to offset roughly 20-25% of the station's annual electricity use. Lowers the power bill, qualifies for the 30% federal Solar Investment Tax Credit, and signals environmental intent to Green Leaf's tenants.", "kicker": "<b>5% profit kicker.</b> A \"bonus rent\" structure on top of the $2,000/month base. Each quarter, after Future Tech 9000 covers all operating costs (electricity, Tesla fees, loan, insurance, base rent), 5% of whatever profit is left goes to Green Leaf. The bonus only triggers when we're profitable \u2014 never penalizes a slow quarter.", "sba504": "<b>SBA 504 loan.</b> A federally-backed small business loan for fixed assets like real estate and equipment. Lower interest rates and longer terms than conventional bank loans (~6.5%, 20-year). Future Tech 9000 finances the project this way, not Green Leaf.", "snda": "<b>SNDA \u2014 Subordination, Non-Disturbance &amp; Attornment Agreement.</b> A three-way agreement signed by Green Leaf, Green Leaf's mortgage lender, and Future Tech 9000. It says: <em>if anything ever happens to Green Leaf's mortgage, the Tesla charging lease still stands. The lender promises not to terminate our lease in foreclosure, and we promise to keep paying rent to whoever owns the property.</em> Without an SNDA, our $1.4M of equipment could be wiped out by something Green Leaf does with their bank that has nothing to do with us. <strong>Non-negotiable.</strong>", "cure": "<b>Cure rights.</b> Lease language that says if either side breaks the lease, the other side has to send a written notice and give them a chance to fix it before terminating. Standard in commercial leases. 30 days for money problems, 60+ for everything else. Green Leaf's lender also gets the notice (so they can step in).", "bonus_dep": "<b>100% Bonus Depreciation.</b> A federal tax provision under the One Big Beautiful Bill Act (OBBBA, 2025) that lets businesses deduct the full cost of qualifying equipment in Year 1 instead of spreading it over 5-15 years. For Future Tech 9000, this means a Y1 deduction of about $1.04 million on the chargers, sitework, and solar. Doesn't apply to Green Leaf \u2014 that's our tax shelter.", "itc": "<b>Solar ITC \u2014 Investment Tax Credit.</b> A 30% federal tax credit on solar PV installations. The 250 kW solar array costs $125,000, so the ITC is $37,500. Future Tech 9000 captures this credit; the project basis is reduced by half the credit amount per IRS \u00a750(c).", "sec30c": "<b>\u00a730C \u2014 Alternative Fuel Vehicle Refueling Property Credit.</b> A federal tax credit (up to 30%) on the cost of EV charging equipment in eligible census tracts. Was extended through 2032 by the Inflation Reduction Act, but the One Big Beautiful Bill Act sunsets it on June 30, 2026. A 16-week build cycle starting after lease signing can't finish in time, so we've excluded it from the model.", "ev_rate": "<b>NV Energy EVCCR-TOU rate.</b> A special commercial electricity tariff for EV charging operators in southern Nevada. Time-of-use pricing, average about $0.074/kWh wholesale \u2014 among the cheapest in the West. Plus separate \"demand charges\" for peak power draw. NV Energy filed this rate to encourage EV station deployment.", "cybercab": "<b>Cybercab.</b> Tesla's autonomous robotaxi \u2014 a 2-seat purpose-built vehicle Tesla announced in 2024. Phased rollout starting in 2026, with Las Vegas and Austin among the first markets. A Vegas Supercharger station is positioned to capture cybercab fleet recharging in addition to consumer drivers."};
-
-function qt(e,k){
-  e.stopPropagation();e.preventDefault();
-  // close other open defs
-  document.querySelectorAll('.qd.open').forEach(el=>{if(el.id!=='qd-'+k)el.classList.remove('open');});
-  let el=document.getElementById('qd-'+k);
-  if(el){el.classList.toggle('open');return;}
-  el=document.createElement('div');
-  el.className='qd open';
-  el.id='qd-'+k;
-  el.innerHTML=QDEFS[k]||'';
-  // Insert after the parent container of the clicked element
-  const target=e.target.closest('.qt');
-  if(target&&target.parentNode){
-    target.parentNode.insertBefore(el,target.nextSibling);
-    // If target is inline (e.g. inside a <p>), put def below the parent block instead
-    const parentBlock=target.closest('.deal-line,.why,.proc-row,p,.rent-piece,.fine');
-    if(parentBlock&&parentBlock!==target.parentNode){
-      parentBlock.parentNode.insertBefore(el,parentBlock.nextSibling);
-    }
-  }
-}
-
 const root=document.documentElement;
 function applyTheme(t){
   root.setAttribute('data-theme',t);
