@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#15171a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
+<title>Landlord Q&amp;A — Answered · Green Leaf Lotus</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&amp;family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root[data-theme="light"]{
+  --paper:#f5f0e6;
+  --paper-2:#ede5d2;
+  --paper-3:#e0d6bf;
+  --ink:#15171a;
+  --ink-soft:#3a3d44;
+  --muted:#6a6964;
+  --rule:#1a1a1a;
+  --rule-soft:#c8c1ad;
+  --red:#7d2a2a;
+  --red-bg:rgba(125,42,42,.14);
+  --red-border:rgba(125,42,42,.35);
+  --green:#2d5e3e;
+  --green-bg:rgba(45,94,62,.14);
+  --green-border:rgba(45,94,62,.40);
+}
+:root[data-theme="dark"]{
+  --paper:#15171a;
+  --paper-2:#1f2226;
+  --paper-3:#2a2d32;
+  --ink:#f5f0e6;
+  --ink-soft:#d8d2c0;
+  --muted:#9a9586;
+  --rule:#404040;
+  --rule-soft:#333;
+  --red:#e98080;
+  --red-bg:rgba(233,128,128,.16);
+  --red-border:rgba(233,128,128,.40);
+  --green:#7fc995;
+  --green-bg:rgba(127,201,149,.16);
+  --green-border:rgba(127,201,149,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'DM Sans',-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-size-adjust:100%;
+}
+body{min-height:100vh;transition:background-color .35s ease,color .35s ease}
+.shell{max-width:820px;margin:0 auto;padding:32px 22px 60px;position:relative}
+
+.theme-toggle{
+  position:fixed;top:14px;right:14px;
+  background:var(--paper-2);
+  border:1px solid var(--rule-soft);
+  color:var(--ink);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:600;
+  padding:7px 11px;border-radius:6px;
+  cursor:pointer;letter-spacing:.04em;
+  z-index:100;
+}
+
+/* Edit toolbar */
+.edit-toolbar{
+  position:fixed;top:14px;left:14px;
+  display:flex;gap:6px;flex-wrap:wrap;
+  z-index:100;
+  max-width:calc(100% - 130px);
+}
+.edit-toolbar button{
+  background:var(--paper-2);
+  border:1px solid var(--rule-soft);
+  color:var(--ink);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:600;
+  padding:7px 11px;border-radius:6px;
+  cursor:pointer;letter-spacing:.04em;
+}
+.edit-toolbar button.active{
+  background:var(--red);
+  color:var(--paper);
+  border-color:var(--red);
+}
+.edit-toolbar button:hover{
+  border-color:var(--ink);
+}
+
+/* Edit mode visual indicator */
+body.edit-mode [contenteditable="true"]{
+  outline:1px dashed var(--rule-soft);
+  outline-offset:2px;
+  border-radius:3px;
+  transition:outline .15s ease;
+}
+body.edit-mode [contenteditable="true"]:hover{
+  outline:1px dashed var(--ink);
+  background:rgba(255,255,255,.04);
+}
+body.edit-mode [contenteditable="true"]:focus{
+  outline:2px solid var(--red);
+  background:var(--red-bg);
+}
+
+/* Status toast */
+.toast{
+  position:fixed;
+  bottom:20px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 18px;
+  border-radius:6px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:600;
+  letter-spacing:.04em;
+  z-index:200;
+  opacity:0;
+  transition:transform .3s ease, opacity .3s ease;
+  pointer-events:none;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
+}
+
+/* Edit hint banner */
+.edit-hint{
+  display:none;
+  margin:0 0 18px;
+  padding:10px 14px;
+  background:var(--red-bg);
+  border-left:3px solid var(--red);
+  border-radius:0 6px 6px 0;
+  font-size:13px;
+  color:var(--ink);
+}
+body.edit-mode .edit-hint{display:block;}
+.edit-hint strong{color:var(--red);}
+
+header.head{
+  border-bottom:2px solid var(--rule);
+  padding-bottom:18px;margin-bottom:24px;
+}
+.kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:8px;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:800;
+  font-size:clamp(28px,5vw,40px);
+  line-height:1.08;
+  letter-spacing:-.01em;
+  margin-bottom:8px;
+}
+.sub{
+  color:var(--ink-soft);font-size:14px;
+}
+.meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);
+  margin-top:10px;
+}
+
+.legend{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin:18px 0 28px;
+}
+.legend-item{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:600;
+  padding:7px 11px;border-radius:6px;
+  border:1px solid;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.legend-item .dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+}
+.legend-red{color:var(--red);border-color:var(--red-border);background:var(--red-bg);}
+.legend-red .dot{background:var(--red);}
+.legend-green{color:var(--green);border-color:var(--green-border);background:var(--green-bg);}
+.legend-green .dot{background:var(--green);}
+
+h2.section{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:22px;
+  margin:32px 0 14px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--rule-soft);
+}
+h2.section .num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--muted);
+  margin-right:8px;font-weight:600;
+}
+
+.qa{margin-bottom:14px;}
+.q{
+  font-weight:600;color:var(--ink);
+  margin-bottom:5px;
+  font-size:14.5px;
+}
+.a{
+  padding:8px 12px;
+  border-radius:6px;
+  border-left:3px solid;
+  font-size:14px;
+  line-height:1.5;
+}
+.a.answered{
+  color:var(--red);
+  background:var(--red-bg);
+  border-color:var(--red);
+  font-weight:500;
+}
+.a.new{
+  color:var(--green);
+  background:var(--green-bg);
+  border-color:var(--green);
+  font-weight:500;
+}
+.a small{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  opacity:.75;
+  margin-bottom:3px;
+}
+.note{
+  margin-top:6px;
+  font-size:12.5px;
+  color:var(--muted);
+  font-style:italic;
+}
+
+footer{
+  margin-top:40px;padding-top:18px;
+  border-top:1px solid var(--rule-soft);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);
+}
+
+@media print{
+  .theme-toggle,.edit-toolbar,.toast,.edit-hint{display:none !important}
+  body{background:#fff;color:#000;}
+  [contenteditable="true"]{outline:none !important;}
+}
+</style>
+</head>
+<body class="">
+
+<button class="theme-toggle" onclick="toggleTheme()">◐ THEME</button>
+
+<div class="edit-toolbar">
+  <button id="editBtn" onclick="toggleEdit()" class="">✎ EDIT</button>
+  <button onclick="saveLocal()">💾 SAVE</button>
+  <button onclick="downloadFile()">⬇ DOWNLOAD</button>
+  <button onclick="resetLocal()">↺ RESET</button>
+</div>
+
+<div class="toast show" id="toast">Edit mode off</div>
+
+<div class="shell">
+
+<div class="edit-hint">
+  <strong>EDIT MODE ON.</strong> Click any text to change it. <strong>Any answer you change will turn green automatically</strong> to flag it as a new update. Hit SAVE to keep changes in your browser. Hit DOWNLOAD to save a new HTML file with your edits baked in.
+</div>
+
+<header class="head">
+  <div class="kicker">Green Leaf Lotus · Landlord Diligence</div>
+  <h1>Landlord Q&amp;A — Answered</h1>
+  <div class="sub">All 12 sections. Existing answers highlighted; gaps filled in.</div>
+  <div class="meta">May 11, 2026 · 3463 Procyon St, Las Vegas NV 89102</div>
+</header>
+
+<div class="legend">
+  <span class="legend-item legend-red"><span class="dot"></span>RED — answered previously</span>
+  <span class="legend-item legend-green"><span class="dot"></span>GREEN — new answer (filled in)</span>
+</div>
+
+<!-- SECTION 1 -->
+<h2 class="section"><span class="num">01</span>Business Model &amp; Revenue</h2>
+
+<div class="qa">
+  <div class="q">Who owns the equipment?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">Who pays for installation upfront?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">What revenue share do we get per kWh or per session?</div>
+  <div class="a answered"><small>Answered</small>TBD</div>
+</div>
+<div class="qa">
+  <div class="q">How are pricing rates set (and who controls them)?</div>
+  <div class="a answered"><small>Answered</small>We do</div>
+</div>
+<div class="qa">
+  <div class="q">Are there minimum revenue guarantees?</div>
+  <div class="a answered"><small>Answered</small>$2,000 per month.</div>
+</div>
+<div class="qa">
+  <div class="q">How often are payments made to us? Monthly/quarterly?</div>
+  <div class="a answered"><small>Answered</small>Pre paid Monthly.</div>
+</div>
+<div class="qa">
+  <div class="q">Can pricing be adjusted as electricity costs change?</div>
+  <div class="a answered"><small>Answered</small>We control pricing, so yes.</div>
+</div>
+
+<!-- SECTION 2 -->
+<h2 class="section"><span class="num">02</span>Electrical Capacity &amp; Infrastructure</h2>
+
+<div class="qa">
+  <div class="q">Have you evaluated our current electrical capacity?</div>
+  <div class="a answered"><small>Answered</small>Metered separately&nbsp;</div>
+</div>
+<div class="qa">
+  <div class="q">Will upgrades to transformers/panels be required?</div>
+  <div class="a answered"><small>Answered</small>No.</div>
+</div>
+<div class="qa">
+  <div class="q">Who pays for electrical upgrades?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">Will this affect our existing utility bills or allocations?</div>
+  <div class="a answered"><small>Answered</small>No — separate meter for billing.</div>
+</div>
+<div class="qa">
+  <div class="q">Will you have your own separate meter?</div>
+  <div class="a answered"><small>Answered</small>Yes.</div>
+</div>
+
+<!-- SECTION 3 -->
+<h2 class="section"><span class="num">03</span>Installation &amp; Construction</h2>
+
+<div class="qa">
+  <div class="q">What is the full installation timeline?</div>
+  <div class="a answered"><small>Answered</small>Up to 4 months (including estimated installation timeline).</div>
+  <div class="note">A detailed installation timeline sheet (week-by-week breakdown) will be provided as a separate document.</div>
+</div>
+<div class="qa">
+  <div class="q">Will parking spaces be taken offline during construction?</div>
+  <div class="a answered"><small>Answered</small>TBD.</div>
+</div>
+<div class="qa">
+  <div class="q">Do you handle permits and utility coordination in Las Vegas?</div>
+  <div class="a answered"><small>Answered</small>Yes.</div>
+</div>
+<div class="qa">
+  <div class="q">Will trenches or concrete work impact landscaping or drainage?</div>
+  <div class="a answered"><small>Answered</small>TBD.</div>
+</div>
+<div class="qa">
+  <div class="q">Who is responsible for restoring the site afterward?</div>
+  <div class="a answered"><small>Answered</small>We are.</div>
+</div>
+<div class="qa">
+  <div class="q">Can you send me a site drawing?</div>
+  <div class="a new"><small>New answer</small>We will provide AI rendering, but a preliminary site plan will be prepared as part of pre-construction (weeks 1–4 of the 16-week timeline). It will be shared once the site survey and electrical capacity review are complete. Final stamped drawings come from our licensed engineer after permit submission.</div>
+</div>
+
+<!-- SECTION 4 -->
+<h2 class="section"><span class="num">04</span>Costs &amp; Financial Exposure</h2>
+
+<div class="qa">
+  <div class="q">Are there any upfront costs to GL Capital Partners?</div>
+  <div class="a answered"><small>Answered</small>No.</div>
+</div>
+<div class="qa">
+  <div class="q">Are there ongoing subscription or network fees?</div>
+  <div class="a answered"><small>Answered</small>No.</div>
+</div>
+<div class="qa">
+  <div class="q">Who pays for maintenance and repairs?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">Are there penalties if chargers underperform?</div>
+  <div class="a answered"><small>Answered</small>No.</div>
+</div>
+<div class="qa">
+  <div class="q">What happens if usage is low?</div>
+  <div class="a answered"><small>Answered</small>We have guaranteed payment built into the lease ($2,000/month minimum).</div>
+</div>
+
+<!-- SECTION 5 -->
+<h2 class="section"><span class="num">05</span>Charger Type &amp; Performance</h2>
+
+<div class="qa">
+  <div class="q">Are these Level 2 or DC fast chargers (superchargers)?</div>
+  <div class="a new"><small>New answer</small>DC fast chargers — Tesla V4 Superchargers. Not Level 2.</div>
+</div>
+<div class="qa">
+  <div class="q">What is the charging speed (kW output)?</div>
+  <div class="a new"><small>New answer</small>500kWh</div>
+</div>
+<div class="qa">
+  <div class="q">How many chargers are planned initially?</div>
+  <div class="a answered"><small>Answered</small>8 stalls.</div>
+</div>
+<div class="qa">
+  <div class="q">Can we scale up later easily?</div>
+  <div class="a answered"><small>Answered</small>Minimum install is 4 stalls. Scale is determined by demand/revenue — same permitting and installation process.</div>
+</div>
+<div class="qa">
+  <div class="q">What uptime/service guarantee do you provide (e.g., 95%+)?</div>
+  <div class="a answered"><small>Answered</small>97% backed by Tesla.</div>
+</div>
+
+<!-- SECTION 6 -->
+<h2 class="section"><span class="num">06</span>Lotus Tenant Experience</h2>
+
+<div class="qa">
+  <div class="q">How do tenants access chargers (app, RFID, credit card)?</div>
+  <div class="a answered"><small>Answered</small>Tesla app.</div>
+</div>
+<div class="qa">
+  <div class="q">Can we offer discounted charging for residents vs. the public?</div>
+  <div class="a answered"><small>Answered</small>Not available through the Tesla app at this time</div>
+</div>
+<div class="qa">
+  <div class="q">Is there 24/7 customer support for users?</div>
+  <div class="a answered"><small>Answered</small>Yes.</div>
+</div>
+<div class="qa">
+  <div class="q">How are charging disputes or billing issues handled?</div>
+  <div class="a answered"><small>Answered</small>By Tesla.</div>
+</div>
+
+<!-- SECTION 7 -->
+<h2 class="section"><span class="num">07</span>Parking &amp; Operations</h2>
+
+<div class="qa">
+  <div class="q">How many parking spaces will be converted?</div>
+  <div class="a answered"><small>Answered</small>8.</div>
+</div>
+<div class="qa">
+  <div class="q">How many chargers must be ADA accessible?</div>
+  <div class="a answered"><small>Answered</small>1.</div>
+</div>
+<div class="qa">
+  <div class="q">Will ADA accessibility require extra spaces?</div>
+  <div class="a answered"><small>Answered</small>TBD.</div>
+</div>
+<div class="qa">
+  <div class="q">Do you provide signage and striping?</div>
+  <div class="a answered"><small>Answered</small>Yes.</div>
+</div>
+<div class="qa">
+  <div class="q">How do we ensure the spaces are available for restaurant use during peak hours?</div>
+  <div class="a answered"><small>Answered</small>We can turn off chargers for certain hours — take them off-line from the Tesla network.</div>
+</div>
+
+<!-- SECTION 8 -->
+<h2 class="section"><span class="num">08</span>Contract Terms</h2>
+
+<div class="qa">
+  <div class="q">What is the contract length? (10, 15, 20 years?)</div>
+  <div class="a answered"><small>Answered</small>10 years, with renewal every 5 years.</div>
+  <div class="note">Note: project context shows a 20-year initial term with two 5-year extensions in the financial model. Worth confirming which version is being offered.</div>
+</div>
+<div class="qa">
+  <div class="q">Is there an exclusivity clause?</div>
+  <div class="a answered"><small>Answered</small>For who? Tesla offers no exclusivity. So, someone else can place more chargers on the other side of the street.</div>
+</div>
+<div class="qa">
+  <div class="q">What are termination options and penalties?</div>
+  <div class="a new"><small>New answer</small>Proposed framework (final terms in lease draft):<br>
+  • <strong>Default cure period:</strong> 30 days for monetary default, 60 days for non-monetary, with notice.<br>
+  • <strong>Voluntary early termination by landlord:</strong> requires buyout of unamortized capital improvements (declining balance over the lease term).<br>
+  • <strong>Voluntary early termination by operator:</strong> equipment is removed at our cost; site is restored.<br>
+  • <strong>Force majeure / regulatory:</strong> standard suspension clauses.<br>
+  Specific dollar amounts and notice periods to be drafted by counsel.</div>
+</div>
+<div class="qa">
+  <div class="q">Can we buy out the equipment later? At what price?</div>
+  <div class="a answered"><small>Answered</small>Yes but this would encapsulate the equipment and future revenue for a fair market valuation. At this time we don't believe this would be a simple transaction.</div>
+</div>
+<div class="qa">
+  <div class="q">What happens if Operating Company is acquired or goes out of business?</div>
+  <div class="a new"><small>New answer</small>
+  • <strong>Acquisition:</strong> the lease and operating rights transfer to the acquirer. Standard assignment provisions in the lease protect Green Leaf's revshare and minimum payment.<br>
+  • <strong>Bankruptcy:</strong> the lease becomes an asset of the estate; landlord has step-in rights to either (a) keep the chargers operating with a successor operator or (b) terminate the lease and take title to the equipment at fair-market value.<br>
+  • <strong>Landlord protection:</strong> a UCC filing and equipment lien framework will be specified so Green Leaf is not exposed to operator creditors.</div>
+</div>
+<div class="qa">
+  <div class="q">What happens when Green Leaf Lotus is sold?</div>
+  <div class="a answered"><small>Answered</small>Transfer of lease to new owners. Just like your commercial leases.</div>
+</div>
+
+<!-- SECTION 9 -->
+<h2 class="section"><span class="num">09</span>Data &amp; Reporting</h2>
+
+<div class="qa">
+  <div class="q">Will we receive usage reports (sessions, revenue, utilization)?</div>
+  <div class="a answered"><small>Answered</small>If we are on a revshare, we would provide reports.</div>
+</div>
+<div class="qa">
+  <div class="q">Can we monitor real-time performance?</div>
+  <div class="a answered"><small>Answered</small>TBD</div>
+</div>
+<div class="qa">
+  <div class="q">Who owns the customer/usage data?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">Can data integrate with our property management systems, i.e. Entrata?</div>
+  <div class="a answered"><small>Answered</small>TBD</div>
+</div>
+
+<!-- SECTION 10 -->
+<h2 class="section"><span class="num">10</span>Incentives &amp; Rebates</h2>
+
+<div class="qa">
+  <div class="q">Will you apply for NV Energy EV rebates on our behalf?</div>
+  <div class="a answered"><small>Answered</small>No.</div>
+</div>
+<div class="qa">
+  <div class="q">Who keeps the rebates/incentives?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">Who benefits from any available federal tax credits?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+  <div class="note">Note: if Green Leaf selects Path B (LLC Equity Hybrid), the 30% Solar ITC and bonus depreciation flow through to the landlord pro-rata via K-1.</div>
+</div>
+<div class="qa">
+  <div class="q">Can we monetize carbon credits or sustainability incentives?</div>
+  <div class="a answered"><small>Answered</small>TBD</div>
+</div>
+
+<!-- SECTION 11 -->
+<h2 class="section"><span class="num">11</span>Maintenance &amp; Support</h2>
+
+<div class="qa">
+  <div class="q">What's the response time for repairs?</div>
+  <div class="a answered"><small>Answered</small>Major issues repaired in 2-3 business days. Most issues resolved remotely.&nbsp;</div>
+</div>
+<div class="qa">
+  <div class="q">Do you offer up-time guarantees (SLA)?</div>
+  <div class="a answered"><small>Answered</small>Tesla does, 97%.</div>
+</div>
+<div class="qa">
+  <div class="q">Who pays for preventative maintenance?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+<div class="qa">
+  <div class="q">Who handles vandalism or damage?</div>
+  <div class="a answered"><small>Answered</small>We do.</div>
+</div>
+
+<!-- SECTION 12 -->
+<h2 class="section"><span class="num">12</span>Futureproofing</h2>
+
+<div class="qa">
+  <div class="q">I assume the chargers are compatible with all major EV brands by adapter?</div>
+  <div class="a answered"><small>Answered</small>NACS connector which is the US plug that has won the plug war.</div>
+</div>
+<div class="qa">
+  <div class="q">Will they support future higher-speed charging upgrades?</div>
+  <div class="a answered"><small>Answered</small>Highly unlikely , these support up to 500kWh. Most cars now charge at 250kWh</div>
+</div>
+<div class="qa">
+  <div class="q">Are software updates included?</div>
+  <div class="a answered"><small>Answered</small>Yes.</div>
+</div>
+<div class="qa">
+  <div class="q">How do we expand capacity as EV adoption increases?</div>
+  <div class="a answered"><small>Answered</small>Increased stalls on the property.</div>
+</div>
+
+<footer>
+  Green Leaf Lotus deal · Numbers are estimates · Both sides retain own counsel and CPA before signing
+</footer>
+
+</div>
+
+<script>
+/* ============ THEME ============ */
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('qaTheme',t);}catch(e){}
+}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme')||'light';
+  setTheme(cur==='light'?'dark':'light');
+}
+(function(){
+  let t='light';
+  try{
+    const saved=localStorage.getItem('qaTheme');
+    if(saved){t=saved;}
+    else if(window.matchMedia('(prefers-color-scheme: dark)').matches){t='dark';}
+  }catch(e){}
+  setTheme(t);
+})();
+
+/* ============ TOAST ============ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* ============ EDIT MODE ============ */
+const STORAGE_KEY='qaEditedContent_v1';
+
+function getEditableSelectors(){
+  // Elements that should be editable
+  return ['.q','.a','.note','.section','h1','.sub','.kicker'];
+}
+
+function applyEditableState(on){
+  const selectors=getEditableSelectors();
+  selectors.forEach(sel=>{
+    document.querySelectorAll(sel).forEach(el=>{
+      if(on){
+        el.setAttribute('contenteditable','true');
+        el.setAttribute('spellcheck','true');
+      }else{
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+  });
+}
+
+function toggleEdit(){
+  const body=document.body;
+  const btn=document.getElementById('editBtn');
+  const isOn=body.classList.toggle('edit-mode');
+  applyEditableState(isOn);
+  if(isOn){
+    btn.classList.add('active');
+    btn.textContent='✓ DONE';
+    showToast('Edit mode on — click any text');
+  }else{
+    btn.classList.remove('active');
+    btn.textContent='✎ EDIT';
+    showToast('Edit mode off');
+  }
+}
+
+/* ============ SAVE TO BROWSER ============ */
+function saveLocal(){
+  try{
+    // Save the inner HTML of the shell so we restore exactly what user sees
+    const shell=document.querySelector('.shell');
+    if(!shell){showToast('Save failed');return;}
+    localStorage.setItem(STORAGE_KEY,shell.innerHTML);
+    showToast('✓ Saved to this browser');
+  }catch(e){
+    showToast('Save failed — storage full?');
+    console.error(e);
+  }
+}
+
+function loadLocal(){
+  try{
+    const saved=localStorage.getItem(STORAGE_KEY);
+    if(!saved)return false;
+    const shell=document.querySelector('.shell');
+    if(!shell)return false;
+    shell.innerHTML=saved;
+    return true;
+  }catch(e){
+    console.error(e);
+    return false;
+  }
+}
+
+function resetLocal(){
+  if(!confirm('Reset all edits? This cannot be undone.'))return;
+  try{
+    localStorage.removeItem(STORAGE_KEY);
+    showToast('Reset — reloading...');
+    setTimeout(()=>location.reload(),700);
+  }catch(e){
+    showToast('Reset failed');
+  }
+}
+
+/* ============ DOWNLOAD AS HTML FILE ============ */
+function downloadFile(){
+  try{
+    // Turn off edit mode before download so file opens clean
+    if(document.body.classList.contains('edit-mode')){
+      toggleEdit();
+    }
+    // Clone the document so we can clean it up
+    const doc=document.documentElement.cloneNode(true);
+    // Strip contenteditable attrs from clone
+    doc.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    doc.querySelectorAll('[spellcheck]').forEach(el=>el.removeAttribute('spellcheck'));
+    // Strip auto-green bookkeeping attrs — they re-capture on next load
+    doc.querySelectorAll('[data-original-text]').forEach(function(el){
+      el.removeAttribute('data-original-text');
+      el.removeAttribute('data-original-class');
+      el.removeAttribute('data-original-label');
+    });
+    // Remove edit-mode class if present
+    doc.querySelector('body').classList.remove('edit-mode');
+    const html='<!DOCTYPE html>\n'+doc.outerHTML;
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const date=new Date().toISOString().slice(0,10);
+    a.href=url;
+    a.download='greenleaflotus_qa_edited_'+date+'.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    showToast('✓ Downloaded');
+  }catch(e){
+    showToast('Download failed');
+    console.error(e);
+  }
+}
+
+/* ============ KEYBOARD SHORTCUTS ============ */
+document.addEventListener('keydown',function(e){
+  // Ctrl/Cmd + S = save
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){
+    e.preventDefault();
+    saveLocal();
+  }
+  // Ctrl/Cmd + E = toggle edit
+  if((e.ctrlKey||e.metaKey)&&e.key==='e'){
+    e.preventDefault();
+    toggleEdit();
+  }
+});
+
+/* ============ AUTO-GREEN ON EDIT ============ */
+/* When a user edits an answer, flip red ".answered" -> green ".new"
+   and swap the "Answered" label to "New answer". If user reverts the
+   text back to its original, flip back. Only applies to .a blocks. */
+
+function getAnswerText(el){
+  // Read textContent of .a, skipping the <small> label child
+  let text='';
+  el.childNodes.forEach(function(node){
+    if(node.nodeName==='SMALL')return;
+    text+=node.textContent||'';
+  });
+  return text.trim();
+}
+
+function captureOriginals(){
+  document.querySelectorAll('.a').forEach(function(el){
+    el.dataset.originalText=getAnswerText(el);
+    el.dataset.originalClass=el.classList.contains('new')?'new':'answered';
+    var small=el.querySelector('small');
+    el.dataset.originalLabel=small?small.textContent:'';
+  });
+}
+
+function checkAnswerChanged(el){
+  if(!el||!el.classList||!el.classList.contains('a'))return;
+  var current=getAnswerText(el);
+  var original=el.dataset.originalText||'';
+  var origClass=el.dataset.originalClass||'answered';
+  var small=el.querySelector('small');
+
+  if(current!==original){
+    // Edited — mark as new (green)
+    if(el.classList.contains('answered')){
+      el.classList.remove('answered');
+      el.classList.add('new');
+    }
+    if(small && small.textContent.trim()==='Answered'){
+      small.textContent='New answer';
+    }
+  }else{
+    // Reverted back to original — restore original class if needed
+    if(origClass==='answered' && el.classList.contains('new')){
+      el.classList.remove('new');
+      el.classList.add('answered');
+      if(small && small.textContent.trim()==='New answer'){
+        small.textContent=el.dataset.originalLabel||'Answered';
+      }
+    }
+  }
+}
+
+document.addEventListener('input',function(e){
+  var el=e.target.closest && e.target.closest('.a');
+  if(el)checkAnswerChanged(el);
+});
+
+/* ============ INIT: LOAD SAVED EDITS ============ */
+(function(){
+  // Try to restore saved content on load
+  if(loadLocal()){
+    // Small delay so toast shows after page settles
+    setTimeout(()=>showToast('Loaded your saved edits'),400);
+  }
+  // Capture originals AFTER any restore so the current on-screen state
+  // becomes the new baseline for "what counts as a change"
+  captureOriginals();
+})();
+</script>
+
+
+
+</body></html>
